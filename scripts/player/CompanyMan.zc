@@ -4,6 +4,8 @@ Class CompanyMan : DoomPlayer
 {
 	int staminaRegenCounter;
 	const STAMINA_REGEN_RATE = 4; //how many ticks it takes before regenerating a point of stamina
+	int regenDelayCounter;
+	const STAMINA_DELAY = 45; //how many ticks before starting to regenerate stamina
 	int staminaDrainCounter;
 	const STAMINA_DRAIN_RATE = 2; //how many ticks before draining a stamina point while sprinting
 	bool batteryDrain;
@@ -15,7 +17,6 @@ Class CompanyMan : DoomPlayer
 	int currentWeight;
 	double doubleWeight;
 	double weightSpeedFactor;
-	double weightStaminaFactor;
 
 	Default
 	{
@@ -41,33 +42,7 @@ Class CompanyMan : DoomPlayer
 	{
 		Super.Tick();
 		
-		if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED))
-		{
-			if (staminaDrainCounter >= STAMINA_DRAIN_RATE)
-			{
-				TakeInventory("DC_StaminaToken", 1);
-				staminaDrainCounter = 0;
-			}
-			
-			if (CountInv("DC_StaminaToken") > 0)
-			{
-				Speed = 2.0;
-			}
-			staminaDrainCounter++;
-		}
-		else
-		{
-			Speed = 1.0;
-			if (CountInv("DC_StaminaToken") < 100)
-			{
-				staminaRegenCounter++;
-				if (staminaRegenCounter == STAMINA_REGEN_RATE)
-				{
-					GiveInventory("DC_StaminaToken", 1);
-					staminaRegenCounter = 0;
-				}
-			}
-		}
+		DoSprint();
 
 		int activeFlashlightIndex = GetActiveFlashlightIndex();
 
@@ -215,6 +190,55 @@ Class CompanyMan : DoomPlayer
 		return -1;
 	}
 
+	void DoSprint(void)
+	{
+		if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED) && CountInv("DC_StaminaToken") > 0)
+		{
+			if (staminaDrainCounter >= STAMINA_DRAIN_RATE)
+			{
+				if(weightSpeedFactor < 0.4 && CountInv("DC_StaminaToken") > 1)
+				{
+					TakeInventory("DC_StaminaToken", 2);
+				}
+				else
+				{
+					TakeInventory("DC_StaminaToken", 1);
+				}
+				staminaDrainCounter = 0;
+			}
+			
+			if (CountInv("DC_StaminaToken") > 0)
+			{
+				Speed = 2.0 * weightSpeedFactor;
+			}
+			staminaDrainCounter++;
+			regenDelayCounter = STAMINA_DELAY;
+		}
+		else if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED) && CountInv("DC_StaminaToken") == 0)
+		{
+			//draining all your stamina increases the regeneration delay
+			regenDelayCounter = STAMINA_DELAY * 3;
+		}
+		else
+		{
+			Speed = 1.0 * weightSpeedFactor;
+			//if we have less than max stamina, and we have no delay before regeneration
+			if (CountInv("DC_StaminaToken") < 100 && regenDelayCounter == 0)
+			{
+				staminaRegenCounter++;
+				if (staminaRegenCounter == STAMINA_REGEN_RATE)
+				{
+					GiveInventory("DC_StaminaToken", 1);
+					staminaRegenCounter = 0;
+				}
+			}
+			else if(regenDelayCounter > 0)
+			{
+				regenDelayCounter--;
+			}
+		}
+	}
+
 	void DoBatteryDrain(void)
 	{
 		for(int i = 0; i < inventory.Size(); i++)
@@ -237,9 +261,8 @@ Class CompanyMan : DoomPlayer
 		currentWeight = totalWeight;
 
 		//calculate weight speed factor
-		//tried this with currentWeight instead of doubleWeight but got int
 		weightSpeedFactor = 1/(0.025 * currentWeight + 1.0);
-		console.printf("weightSpeedFactor: %.2f", weightSpeedFactor);
+		//console.printf("weightSpeedFactor: %.2f", weightSpeedFactor);
 
 	}
 }

@@ -1,0 +1,113 @@
+Class ConsoleLetter : Actor
+{
+    name character;
+    static const name letters[] =
+    {
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z"
+    }
+
+    static const name symbols[] =
+    {
+        "$", //A
+        ">", //B
+        ":", //C
+        "[", //D
+        "]", //E
+        "/", //F
+        "*"  //G
+    }
+
+    override void BeginPlay(void)
+    {
+        Super.BeginPlay();
+        character = "A";
+    }
+
+    override void Tick(void)
+    {
+        Super.Tick();
+        UpdateCharacter();
+    }
+
+    Default
+    {
+        +NOGRAVITY
+    }
+
+    States
+    {
+        Spawn:
+            CONS A 0;
+        Stay:
+            #### # 1;
+            Loop
+        Letters:
+            CONS ABCDEFGHIJKLMNOPQRSTUVWXYZ 1;
+        Numbers:
+            CONN ABCDEFGHIJ 1;
+        Symbols:
+            CSYM ABCDEFG 1;
+            stop;
+    }
+
+    void UpdateCharacter(void)
+    {
+        letterIndex = GetLetterFrame(character);
+        symbolIndex = -1;//GetSymbolFrame(character);
+
+
+        if(letterIndex != -1)
+        {
+            sprite = GetSpriteIndex("CONS");
+            frame = letterIndex;
+        }
+        else if (symbolIndex != -1)
+        {
+            sprite = GetSpriteIndex("CSYM");
+            frame = symbolIndex;
+        }
+        else
+        {
+            sprite = GetSpriteIndex("CONN");
+            frame = 0; //convert character to Int
+        }
+    }
+
+    int GetLetterFrame(name inCharacter)
+    {
+        for(int i = 0; i < letters.Size(); i++)
+        {
+            if(letters[i] == inCharacter)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+}

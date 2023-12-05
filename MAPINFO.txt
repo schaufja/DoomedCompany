@@ -8,3 +8,8 @@ gameinfo
 	PlayerClasses = "CompanyMan"
 	StatusBarClass = "CompanyHUD"
 }
+
+DoomEdNums
+{
+	21000 = "ConsoleLetter";
+}
