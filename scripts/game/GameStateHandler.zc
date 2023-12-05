@@ -1,0 +1,12 @@
+Class GameStateHandler : Actor
+{
+    //Left display variables
+    int currentDay;
+    int deadlineDay;
+    int profit;
+    int quota;
+
+    //Center display variables
+
+    //Right display variables
+}

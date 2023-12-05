@@ -18,10 +18,21 @@ maps
 				option1 = 0;
 				option2 = 0;
 				notfortesting = 0;
+				requiredarchives = "";
+			}
+			
+			resource1
+			{
+				type = 2;
+				location = "D:\\Games\\gzdoom\\gzdoom.pk3";
+				option1 = 0;
+				option2 = 0;
+				notfortesting = 1;
+				requiredarchives = "gzdoom";
 			}
 		}
 		defaultfloortexture = "SLIME14";
-		defaultceiltexture = "METAL2";
+		defaultceiltexture = "FLOOR4_8";
 		defaulttoptexture = "METAL2";
 		defaultwalltexture = "METAL2";
 		defaultbottomtexture = "METAL2";
@@ -38,9 +49,9 @@ maps
 		overridebrightness = false;
 		uselongtexturenames = false;
 		useresourcesinreadonlymode = false;
-		viewpositionx = -1.756081f;
-		viewpositiony = 195.3964f;
-		viewscale = 1.758296f;
+		viewpositionx = -470.9418f;
+		viewpositiony = -72.66019f;
+		viewscale = 5.021862f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
@@ -51,34 +62,61 @@ maps
 			backoffsety = 0;
 			backscalex = 100;
 			backscaley = 100;
-			gridsize = 4f;
+			gridsize = 8;
+			gridrotate = 0;
+			gridoriginx = 0;
+			gridoriginy = 0;
 		}
 		
-		fieldtypes
+		reloadresourceprecommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		reloadresourcepostcommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		testprecommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		testpostcommand
+		{
+			autocloseonsuccess = true;
+			exitcodeiserror = true;
+			stderriserror = true;
+		}
+		
+		scriptdocuments
 		{
 			
-			sidedef
+			document0
 			{
-				offsetx_top = 1;
-				offsety_top = 1;
-				offsetx_mid = 1;
-				offsety_mid = 1;
-				offsetx_bottom = 1;
-				offsety_bottom = 1;
+				filename = "DIALOGUE";
+				hash = 3588187714;
+				resource;
+				tabtype = 0;
+				scripttype = 18;
 			}
 			
-			sector
+			document1
 			{
-				xpanningceiling = 1;
-				ypanningceiling = 1;
-				rotationceiling = 17;
-				xscaleceiling = 1;
-				yscaleceiling = 1;
-				xpanningfloor = 1;
-				ypanningfloor = 1;
-				rotationfloor = 17;
-				xscalefloor = 1;
-				yscalefloor = 1;
+				filename = "SCRIPTS";
+				hash = 3469170009;
+				resource;
+				tabtype = 0;
+				scripttype = 1;
+				caretposition = 74;
+				activetab = true;
 			}
 		}
 	}

@@ -1,46 +1,6 @@
 Class ConsoleLetter : Actor
 {
-    name character;
-    static const name letters[] =
-    {
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z"
-    }
-
-    static const name symbols[] =
-    {
-        "$", //A
-        ">", //B
-        ":", //C
-        "[", //D
-        "]", //E
-        "/", //F
-        "*"  //G
-    }
+    string character;
 
     override void BeginPlay(void)
     {
@@ -57,6 +17,7 @@ Class ConsoleLetter : Actor
     Default
     {
         +NOGRAVITY
+        +BRIGHT
     }
 
     States
@@ -65,7 +26,7 @@ Class ConsoleLetter : Actor
             CONS A 0;
         Stay:
             #### # 1;
-            Loop
+            Loop;
         Letters:
             CONS ABCDEFGHIJKLMNOPQRSTUVWXYZ 1;
         Numbers:
@@ -77,14 +38,22 @@ Class ConsoleLetter : Actor
 
     void UpdateCharacter(void)
     {
-        letterIndex = GetLetterFrame(character);
-        symbolIndex = -1;//GetSymbolFrame(character);
-
+        string letterString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        string numberString = "0123456789";
+        string symbolString = "$>:[]/*";
+        int letterIndex = letterString.IndexOf(character);
+        int numberIndex = numberString.IndexOf(character);
+        int symbolIndex = symbolString.IndexOf(character);
 
         if(letterIndex != -1)
         {
             sprite = GetSpriteIndex("CONS");
             frame = letterIndex;
+        }
+        else if (numberIndex != -1)
+        {
+            sprite = GetSpriteIndex("CONN");
+            frame = numberIndex;
         }
         else if (symbolIndex != -1)
         {
@@ -93,21 +62,18 @@ Class ConsoleLetter : Actor
         }
         else
         {
-            sprite = GetSpriteIndex("CONN");
-            frame = 0; //convert character to Int
+            sprite = GetSpriteIndex("TNT1");
+            frame = 0;
         }
     }
 
-    int GetLetterFrame(name inCharacter)
+    void SetCharacter(string inCharacter)
     {
-        for(int i = 0; i < letters.Size(); i++)
+        if (inCharacter.Length() != 1)
         {
-            if(letters[i] == inCharacter)
-            {
-                return i;
-            }
+            return;
         }
 
-        return -1;
+        character = inCharacter;
     }
 }

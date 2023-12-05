@@ -1,0 +1,1 @@
+cameratexture CAM1 540 480 fit 45 40

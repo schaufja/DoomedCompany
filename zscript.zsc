@@ -2,7 +2,13 @@ version "4.5.0"
 
 #include "KeyEventHandler.zsc"
 
+//Hud and display
 #include "scripts/ui/CompanyHud.zc"
+#include "scripts/console/ConsoleLetter.zc"
+#include "scripts/console/ConsoleLine.zc"
+
+//Game state
+#include "scripts/game/GameStateHandler.zc"
 
 #include "scripts/items/DC_BaseItem.zc"
 #include "scripts/items/Flashlight_Basic.zc"

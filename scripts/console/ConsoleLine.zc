@@ -1,0 +1,40 @@
+Class ConsoleLine : Actor
+{
+    int characterLength;
+    int characterOffset;
+    array <ConsoleLetter> lineString;
+
+    override void BeginPlay(void)
+    {
+        characterLength = 17;
+        characterOffset = 16;
+
+        int currentOffset = 0;
+        for(int i = 0; i < characterLength; i++)
+        {
+            ConsoleLetter character = ConsoleLetter(Actor.Spawn("ConsoleLetter", pos + (0, currentOffset, 0), ALLOW_REPLACE));
+            lineString.Push(character);
+            currentOffset += characterOffset;
+        }
+
+        ClearString();
+        PostString("HELLO WORLD");
+    }
+
+    void PostString(string input)
+    {
+        input.Truncate(characterLength);
+        for(int i = 0; i < input.Length(); i++)
+        {
+            lineString[i].SetCharacter(input.Mid(i, 1));
+        }
+    }
+
+    void ClearString(void)
+    {
+        for(int i = 0; i < lineString.Size(); i++)
+        {
+            lineString[i].SetCharacter(" ");
+        }
+    }
+}

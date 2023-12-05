@@ -1,0 +1,26 @@
+Gordion - Company Marine Platform - Safe 0
+Mancubus - Doom/Marine Platform - Safe 0
+
+Experimentation - Desert/Badlands - Easy 0
+Insight - Doom - Easy 0
+
+Assurance - Desert, Very Vertical - Easy 0
+Arboretum - Chex Quest - Easy random(0,5)
+
+Vow - Forest/Dammed River - Easy 0
+Oath - Hexen/Forest - Easy random(5,26)
+
+Offense - Desert/Machinery - Intermediate 0
+
+
+March - Swamp/Deep Pools - Intermediate 0
+
+
+Rend - Ice/Blizzard/Mansion Interior - Hard 550
+ - Blood/
+
+Dine - Snow/Blizzard/Mansion Interior - Hard 600
+ - Wolfenstein
+
+Titan - Flat Snow Wasteland/Large Industrial Interior - Hard 700
+
