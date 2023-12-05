@@ -1,0 +1,4 @@
+
+//raycast to wall. Get wall angle relative to player.
+//spawn outline sprite. check ends are on wall.
+//rightclick toggles string interface on hud. 

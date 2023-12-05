@@ -1,0 +1,10 @@
+gameinfo
+{
+	STARTUPTYPE = "Hexen"
+	STARTUPTITLE = "Doomed Company"
+	STARTUPCOLORS = "000000", "9F0000"
+	AddEventHandlers = "MKeyEventHandler"
+	
+	PlayerClasses = "CompanyMan"
+	StatusBarClass = "CompanyHUD"
+}

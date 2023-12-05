@@ -1,0 +1,49 @@
+class TESTITEM : Actor
+{
+    int Value;
+
+    property prefix: TItem;
+    property CreditValue: Value;
+
+    override bool Used (Actor user)
+    {
+        CompanyMan player = CompanyMan(user);
+
+        Super.Used(user);
+        
+        if (player)
+        {
+            bool success = player.AddItem(itemData);
+            console.printf("success? - " .. success);
+        }
+
+        //console.printf("item_name: %s \nitem_weight: %d \nitem_value: %d", itemData.name, itemData.weight, itemData.value);
+        
+        return true;
+    }
+
+    Default 
+    {
+        TItem.CreditValue -1;
+        Radius 8;
+		Height 14;
+        //+SOLID
+    }
+ 
+    States
+    {
+        Spawn:
+            CELP A 0;
+            #### A 0
+            {
+                TItem.CreditValue = random(5,23);
+                console.printf("Credit Value: %d", TItem.CreditValue);
+            }
+        Stay:
+            #### A 1; 
+            Loop;
+        Icon:
+            CELP A 0;
+            Stop;
+    }
+}

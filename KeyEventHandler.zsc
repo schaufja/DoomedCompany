@@ -1,0 +1,62 @@
+#include "scripts/items/DC_BaseItem.zc"
+
+class MKeyEventHandler : EventHandler
+{
+    override void NetworkProcess(ConsoleEvent e)
+    {
+        if (e.Name == "dc_debug_func")
+        {
+
+            //console.printf("Debug function");
+            let player = CompanyMan(players[e.Player].mo);
+            int itemValue = player.inventory[player.selectedItem].value;
+            console.printf("Value: %d", itemValue);
+        }
+        if (e.Name == "dc_drop")
+        {
+            CompanyMan player = CompanyMan(players[e.Player].mo);
+            DropItem(player);            
+        }
+        if (e.Name == "dc_itemnext")
+        {
+            let player = CompanyMan(players[e.Player].mo);
+            player.NextItem();
+        }
+        if (e.Name == "dc_itemprev")
+        {
+            let player = CompanyMan(players[e.Player].mo);
+            player.PrevItem();
+        }
+    }
+
+    void DropItem(CompanyMan player)
+    {
+        double heightOffset = player.ViewHeight - 12;
+        double cp = cos(player.pitch);
+        double distanceOffset = 10;
+        double itemWeightFactor;
+        
+        ItemData currentItemData = player.inventory[player.selectedItem];
+        string classToSpawn = currentItemData.className;
+        itemWeightFactor = 1/(0.025 * currentItemData.weight + 1.0);
+        if (classToSpawn != "")
+        {
+            DC_BaseItem item = DC_BaseItem(Actor.Spawn(classToSpawn, player.pos + (cp * distanceOffset * cos(player.angle), cp * distanceOffset * sin(player.angle), distanceOffset * sin(player.pitch) + heightOffset), ALLOW_REPLACE));
+            
+            double itemSpeed = 10 * itemWeightFactor;
+
+            item.SetValue(currentItemData.value);
+            item.SetBatteryCharge(currentItemData.batteryCharge);
+            item.SetIsActive(currentItemData.isActive);
+            //item.pitch = player.pitch;
+            item.angle = player.angle;
+            item.vel = (
+                cp * itemSpeed * cos(item.angle),
+                cp * itemspeed * sin(item.angle),
+                itemspeed * sin(-player.pitch)
+            ) + player.vel;
+        }
+
+        player.RemoveItem(player.selectedItem);
+    }
+}

@@ -1,0 +1,53 @@
+#include "scripts/items/DC_BaseItem.zc"
+
+class Flashlight_Basic : DC_BaseItem
+{
+    override void BeginPlay(void)
+	{
+		Super.BeginPlay();
+
+        int maxPower = 35 * 60 * 2; //two minutes of battery life
+
+        itemData = new("ItemData");
+		itemData.name = "Basic Flashlight";
+        itemData.weight = 0;
+        itemData.value = 6;
+        itemData.batteryCharge = maxPower;
+        itemData.batteryMax = maxPower; 
+        itemData.isActive = false;
+        itemData.spriteName = "AFLT";
+        itemData.itemType = ItemTypes.FLASHLIGHT;
+	}
+    
+    override void Tick(void)
+    {
+        Super.Tick();
+        if(itemData.isActive && itemData.batteryCharge > 0)
+        {
+            itemData.batteryCharge--;
+            A_AttachLight("AltFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 0), 2.0, 8, 32, pitch);
+        }
+        else
+        {
+            A_RemoveLight("AltFlashlight");
+        }
+    }
+
+    Default
+    {
+        Scale 0.5;
+        Mass 100;
+    }
+    
+    States
+    {
+        Spawn:
+            FLAS A 0;
+        Stay:
+            #### A 1;
+            Loop;
+        Icon:
+            AFLT A 0;
+            Stop;
+    }
+}

@@ -1,0 +1,102 @@
+class ItemData
+{	
+    string name;
+	int weight;
+    int value;
+    String spriteName;
+    String className;
+
+    //for battery use
+    int batteryCharge;
+    int batteryMax;
+    bool isActive;
+    int itemType;
+}
+
+class ItemTypes
+{
+    const NONE = 0;
+    const JUNK = 1;
+    const FLASHLIGHT = 2;
+}
+
+class DC_BaseItem : Actor
+{
+    ItemData itemData;
+    
+    //override to build additional items
+    override void BeginPlay(void)
+	{
+		Super.BeginPlay();
+
+        itemData = new("ItemData");
+		itemData.name = "Base Item (You shouldn't see this)";
+        itemData.weight = 71;
+        itemData.value = 6;
+        itemData.spriteName = "CELP";
+        
+        itemData.batteryCharge = -1;
+        itemData.batteryMax = -1;
+        itemData.isActive = false;
+        itemData.itemType = ItemTypes.JUNK;
+	}
+
+    //not intended to be overridden by children
+    override void PostBeginPlay(void)
+    {
+        itemData.className = self.GetClassName();
+    }
+
+    override bool Used (Actor user)
+    {
+        CompanyMan player = CompanyMan(user);
+
+        Super.Used(user);
+        
+        if (player)
+        {
+            bool success = player.AddItem(itemData);
+            console.printf("success? - " .. success);
+        }
+
+        //console.printf("item_name: %s \nitem_weight: %d \nitem_value: %d", itemData.name, itemData.weight, itemData.value);
+        
+        self.Destroy();
+
+        return true;
+    }
+
+    Default 
+    {
+        Radius 8;
+		Height 14;
+        //+SOLID
+    }
+ 
+    States
+    {
+        Spawn:
+            CELP A 0;
+        Stay:
+            #### A 1; 
+            Loop;
+        Icon:
+            CELP A 0;
+            Stop;
+    }
+
+    void SetValue(int newValue)
+    {
+        itemData.value = newValue;
+    }
+
+    void SetBatteryCharge(int newValue)
+    {
+        itemData.batteryCharge = newValue;
+    }
+
+    void SetIsActive(bool newValue)
+    {
+        itemData.isActive = newValue;
+    }
+}

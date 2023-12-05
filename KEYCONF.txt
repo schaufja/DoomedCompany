@@ -1,0 +1,16 @@
+addkeysection "Doomed Company Keybindings" DoomedCompany
+addmenukey "Debug Func" dc_debug_func
+defaultbind "dc_debug_func" x
+alias dc_debug_func "netevent \"dc_debug_func\""
+
+addmenukey "Drop Item" dc_drop
+defaultbind "dc_drop" g
+alias dc_drop "netevent \"dc_drop\""
+
+addmenukey "Next Item" dc_itemnext
+defaultbind "dc_itemnext" MWheelUp
+alias dc_itemnext "netevent \"dc_itemnext\""
+
+addmenukey "Prev Item" dc_itemprev
+defaultbind "dc_itemprev" MWheelDown
+alias dc_itemprev "netevent \"dc_itemprev\""

@@ -1,0 +1,259 @@
+class CompanyHUD : DoomStatusBar
+{
+	const UI_WIDTH = 400;
+	const UI_HEIGHT = 300;
+
+	HUDFont weightFont;
+
+	int flags;
+	double uiScale;
+
+	override void Tick(void)
+	{
+		Super.Tick();
+		//Hmmmmm....
+	}
+
+	override void Draw(int state, double TicFrac)
+	{
+		uiScale = 1.0;
+
+		BeginHUD();
+		DrawCompanyHUD();
+	}
+	
+	void DrawCompanyHUD(void)
+	{	
+		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
+
+		font fnt = "CONFONT";
+		weightFont = HUDFont.Create(fnt);		
+
+		int healthX = 80;
+		int healthY = 80;
+		int staminaX = 28;
+		int staminaY = 58;
+		
+		DrawImage("sprites/ui/health_outline.png", (healthX, healthY), flags, 1, (-1, -1), (uiScale, uiScale));
+		DrawImage("sprites/ui/health_critical.png", (healthX, healthY), flags, (1 - (CPlayer.health / 100.0)), (-1, -1), (uiScale, uiScale));
+		
+		switch(CPlayer.mo.CountInv("DC_StaminaToken"))
+		{
+			case 100:
+			case 99:
+			case 98:
+			case 97:
+			case 96:
+				DrawImage("sprites/ui/stamina_100.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 95:
+			case 94:
+			case 93:
+			case 92:
+			case 91:
+				DrawImage("sprites/ui/stamina_95.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 90:
+			case 89:
+			case 88:
+			case 87:
+			case 86:
+				DrawImage("sprites/ui/stamina_90.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 85:
+			case 84:
+			case 83:
+			case 82:
+			case 81:
+				DrawImage("sprites/ui/stamina_85.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 80:
+			case 79:
+			case 78:
+			case 77:
+			case 76:
+				DrawImage("sprites/ui/stamina_80.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 75:
+			case 74:
+			case 73:
+			case 72:
+			case 71:
+				DrawImage("sprites/ui/stamina_75.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 70:
+			case 69:
+			case 68:
+			case 67:
+			case 66:
+				DrawImage("sprites/ui/stamina_70.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 65:
+			case 64:
+			case 63:
+			case 62:
+			case 61:
+				DrawImage("sprites/ui/stamina_65.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 60:
+			case 59:
+			case 58:
+			case 57:
+			case 56:
+				DrawImage("sprites/ui/stamina_60.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 55:
+			case 54:
+			case 53:
+			case 52:
+			case 51:
+				DrawImage("sprites/ui/stamina_55.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 50:
+			case 49:
+			case 48:
+			case 47:
+			case 46:
+				DrawImage("sprites/ui/stamina_50.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 45:
+			case 44:
+			case 43:
+			case 42:
+			case 41:
+				DrawImage("sprites/ui/stamina_45.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 40:
+			case 39:
+			case 38:
+			case 37:
+			case 36:
+				DrawImage("sprites/ui/stamina_40.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 35:
+			case 34:
+			case 33:
+			case 32:
+			case 31:
+				DrawImage("sprites/ui/stamina_35.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 30:
+			case 29:
+			case 28:
+			case 27:
+			case 26:
+				DrawImage("sprites/ui/stamina_30.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 25:
+			case 24:
+			case 23:
+			case 22:
+			case 21:
+				DrawImage("sprites/ui/stamina_25.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 20:
+			case 19:
+			case 18:
+			case 17:
+			case 16:
+				DrawImage("sprites/ui/stamina_20.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 15:
+			case 14:
+			case 13:
+			case 12:
+			case 11:
+				DrawImage("sprites/ui/stamina_15.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 10:
+			case 9:
+			case 8:
+			case 7:
+			case 6:
+				DrawImage("sprites/ui/stamina_10.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 5:
+			case 4:
+			case 3:
+			case 2:
+			case 1:
+				DrawImage("sprites/ui/stamina_5.png", (staminaX, staminaY), flags, 1, (-1, -1), (uiScale, uiScale));
+				break;
+			case 0:
+			default:
+				break;
+		}
+		
+		let companyMan = CompanyMan(CPlayer.mo);
+		int currentWeight = companyMan.currentWeight;
+
+		DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags);
+
+		DrawBatteryBar();
+		
+		DrawInventorySlots();
+	}
+
+	void DrawBatteryBar(void)
+	{
+		int batteryFrameX = 36;
+		int batteryFrameY = 18;
+		int batteryBarX = 47;
+		int batteryBarY = 52;
+
+		let companyMan = CompanyMan(CPlayer.mo);
+		double batteryCharge = double(companyMan.inventory[companyMan.selectedItem].batteryCharge);
+		double batteryMax = double(companyMan.inventory[companyMan.selectedItem].batteryMax);
+		
+		/*
+		console.printf("batteryCharge: %d", batteryCharge);
+		console.printf("batteryMax: %d", batteryMax);
+		console.printf("charge: %d", batteryCharge / batteryMax);
+		*/
+
+		if(batteryCharge != -1)
+		{
+			DrawImage("sprites/ui/battery_frame.png", (batteryFrameX, batteryFrameY), flags, 1, (-1, -1), (uiScale, uiScale));
+		
+			DrawBar("sprites/ui/battery_bar.png", "sprites/ui/battery_bar_frame.png", (double(batteryCharge / batteryMax) * 100), 100, (batteryBarX, batteryBarY), 0, 0, flags);
+		}
+		
+	}
+
+	void DrawInventorySlots(void)
+	{
+		int xOffset = -96; // for four total slots
+		int yOffset = -56;
+
+		let companyMan = CompanyMan(CPlayer.mo);
+		int selectedItem = companyMan.selectedItem;
+
+		for(int i = 0; i < companyMan.inventorySlots; i++)
+		{
+			bool selected = (selectedItem == i);
+			String spriteName = companyMan.inventory[i].spriteName;
+			DrawSlot(xOffset, yOffset, selected, spriteName);
+			xOffset += 64;
+		}
+	}
+
+	void DrawSlot(int xPos, int yPos, bool isSelected, String spriteName)
+	{
+		flags = DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER;
+		double selectedScale = 1.33;
+		double myScale = isSelected ? selectedScale : uiScale;
+
+		spriteName = (spriteName .. "A0");
+
+		DrawImage("sprites/ui/item_frame.png", (xPos, yPos), flags, 1, (-1, -1), (myScale, myScale));
+		DrawImage(spriteName, (xPos, yPos), flags, 1, (-1, -1), (myScale, myScale));
+	}
+
+	//display label maker string interface
+	//array of characters
+	//selected character
+	//draw background
+	//for each character draw text on screen
+	//draw up-down arrows with highlight based on selected character
+	//animate characters as scrolling with fade-in/fade-out
+}

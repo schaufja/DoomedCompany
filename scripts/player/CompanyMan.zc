@@ -1,0 +1,245 @@
+#include "scripts/items/DC_BaseItem.zc"
+
+Class CompanyMan : DoomPlayer
+{
+	int staminaRegenCounter;
+	const STAMINA_REGEN_RATE = 4; //how many ticks it takes before regenerating a point of stamina
+	int staminaDrainCounter;
+	const STAMINA_DRAIN_RATE = 2; //how many ticks before draining a stamina point while sprinting
+	bool batteryDrain;
+
+	//inventory
+	array <ItemData> inventory;
+	int inventorySlots;
+	int selectedItem;
+	int currentWeight;
+	double doubleWeight;
+	double weightSpeedFactor;
+	double weightStaminaFactor;
+
+	Default
+	{
+		Player.ForwardMove 0.5,0.25;
+		Player.SideMove 0.5,0.25;
+		Player.ViewBob 0.2;
+		Player.StartItem "DC_StaminaToken", 100;
+		Player.StartItem "DC_BatteryToken", 100;
+		Player.StartItem "DC_Hands";
+	}
+	
+	override void PostBeginPlay(void)
+	{
+		Super.PostBeginPlay();
+		batteryDrain = false;
+		inventorySlots = 4;
+		selectedItem = 0;
+
+		SetupInventory();
+	}
+
+	override void Tick(void)
+	{
+		Super.Tick();
+		
+		if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED))
+		{
+			if (staminaDrainCounter >= STAMINA_DRAIN_RATE)
+			{
+				TakeInventory("DC_StaminaToken", 1);
+				staminaDrainCounter = 0;
+			}
+			
+			if (CountInv("DC_StaminaToken") > 0)
+			{
+				Speed = 2.0;
+			}
+			staminaDrainCounter++;
+		}
+		else
+		{
+			Speed = 1.0;
+			if (CountInv("DC_StaminaToken") < 100)
+			{
+				staminaRegenCounter++;
+				if (staminaRegenCounter == STAMINA_REGEN_RATE)
+				{
+					GiveInventory("DC_StaminaToken", 1);
+					staminaRegenCounter = 0;
+				}
+			}
+		}
+
+		int activeFlashlightIndex = GetActiveFlashlightIndex();
+
+		if((activeFlashlightIndex != -1))
+		{
+			A_AttachLight("AltFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 41), 2.0, 8, 32, pitch);
+			//if all four item are active flashlights, create a death beam to harm bracken
+		}
+		else
+		{
+			A_RemoveLight("AltFlashlight");
+		}
+
+		DoBatteryDrain();
+
+		UpdateWeight();
+	}
+
+	void SetupInventory(void)
+	{
+		if (inventory.Size() == 0)
+		{
+			for(int i = 0; i < inventorySlots; i++)
+			{
+				let empty = new("ItemData");
+				inventory.Push(empty);
+			}
+		}
+
+		for(int i = 0; i < inventorySlots; i++)
+		{
+			RemoveItem(i);
+		}
+	}
+
+	bool AddItem(ItemData item)
+	{
+		let emptySlot = GetEmptyInventorySlot();
+		if(emptySlot != -1)
+		{
+			inventory[emptySlot].name = item.name;
+			inventory[emptySlot].weight = item.weight;
+			inventory[emptySlot].value = item.value;
+			inventory[emptySlot].spriteName = item.spriteName;
+			inventory[emptySlot].className = item.className;
+
+			inventory[emptySlot].batteryCharge = item.batteryCharge;
+			inventory[emptySlot].batteryMax = item.batteryMax;
+			inventory[emptySlot].isActive = item.isActive;
+			inventory[emptySlot].itemType = item.itemType;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	bool RemoveItem(int itemIndex)
+	{
+		if(itemIndex != -1)
+		{
+			let empty = new("ItemData");
+			
+			empty.name = "";
+			empty.weight = 0;
+			empty.value = 0;
+			empty.spriteName = "TNT1";
+			empty.className = "";
+			empty.batteryCharge = -1;
+			empty.batteryMax = -1;
+			empty.isActive = false;
+			empty.itemType = ItemTypes.NONE;
+
+			inventory[itemIndex] = empty;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	int GetEmptyInventorySlot()
+	{
+		for(int i = 0; i < inventory.Size(); i++)
+		{
+			if(inventory[i] && inventory[i].name == "")
+			{
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
+	void NextItem(void)
+	{
+		if(selectedItem == 0)
+		{
+			selectedItem = inventorySlots - 1;
+		}
+		else
+		{
+			selectedItem--;
+		}
+	}
+
+	void PrevItem(void)
+	{
+		if(selectedItem == inventorySlots - 1)
+		{
+			selectedItem = 0;
+		}
+		else
+		{
+			selectedItem++;
+		}
+	}
+
+	void ToggleItemActive(void)
+	{
+		if(inventory[selectedItem].itemType != 2)
+		{
+			return;
+		}
+
+		let oldActive = inventory[selectedItem].isActive;
+		inventory[selectedItem].isActive = !oldActive;
+		//console.printf("isActive: %d",inventory[selectedItem].isActive);
+	}
+
+	int GetActiveFlashlightIndex(void)
+	{
+		for(int i = 0; i < inventory.Size(); i++)
+		{
+			bool isFlashlight = inventory[i].itemType == ItemTypes.FLASHLIGHT;
+			bool isActive = inventory[i].isActive;
+			bool hasBatteryCharge = inventory[i].batteryCharge > 0;
+
+			if(isFlashlight && isActive && hasBatteryCharge)
+			{
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	void DoBatteryDrain(void)
+	{
+		for(int i = 0; i < inventory.Size(); i++)
+		{
+			if(inventory[i].batteryCharge > 0 && inventory[i].isActive)
+			{
+				inventory[i].batteryCharge--;
+			}
+		}
+	}
+
+	void UpdateWeight(void)
+	{
+		int totalWeight = 0;
+		for(int i = 0; i < inventory.Size(); i++)
+		{
+			totalWeight += inventory[i].weight;
+		}
+
+		currentWeight = totalWeight;
+
+		//calculate weight speed factor
+		//tried this with currentWeight instead of doubleWeight but got int
+		weightSpeedFactor = 1/(0.025 * currentWeight + 1.0);
+		console.printf("weightSpeedFactor: %.2f", weightSpeedFactor);
+
+	}
+}

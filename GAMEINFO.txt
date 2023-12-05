@@ -1,0 +1,5 @@
+STARTUPTYPE = "Hexen"
+STARTUPTITLE = "Doomed Company"
+STARTUPCOLORS = "000000", "9F0000"
+
+addeventhandlers = "MKeyEventHandler" 

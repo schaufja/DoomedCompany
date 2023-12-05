@@ -1,0 +1,37 @@
+version "4.5.0"
+
+#include "KeyEventHandler.zsc"
+
+#include "scripts/ui/CompanyHud.zc"
+
+#include "scripts/items/DC_BaseItem.zc"
+#include "scripts/items/Flashlight_Basic.zc"
+//#include "scripts/items/LabelMaker.zc"
+
+#include "scripts/weapons/DC_Hands.zc"
+
+#include "scripts/player/DC_StaminaToken.zc"
+#include "scripts/player/DC_BatteryToken.zc"
+#include "scripts/player/CompanyMan.zc"
+
+// MONSTERS
+/*#include "scripts/monsters/BaboonHawk.zc" // pinky pallette shifted?
+#include "scripts/monsters/Bracken.zc" // WraithD3
+#include "scripts/monsters/BunkerSpider.zc" // blood spider
+#include "scripts/monsters/CircuitBee.zc"
+#include "scripts/monsters/CoilHead.zc" // edited Heretic golem
+#include "scripts/monsters/EarthLeviathan.zc" // invisible, sticks to the sand, wanders and launches projectile that leaves a trail which looks like a worm
+#include "scripts/monsters/EyelessDog.zc"
+#include "scripts/monsters/ForestKeeper.zc" 
+#include "scripts/monsters/GhostGirl.zc"
+#include "scripts/monsters/HoardingBug.zc"
+#include "scripts/monsters/Hygrodere.zc" // oriented sprite on floor
+#include "scripts/monsters/Jester.zc"
+#include "scripts/monsters/SnareFlea.zc"
+#include "scripts/monsters/SporeLizard.zc"
+#include "scripts/monsters/Thumper.zc" // Melee Revenant
+
+// PASSIVE CREATURES
+#include "scripts/monsters/Manticoil.zc"
+#include "scripts/monsters/RoamingLocusts.zc"*/
+
