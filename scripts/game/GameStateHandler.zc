@@ -1,12 +1,157 @@
 Class GameStateHandler : Actor
 {
-    //Left display variables
+    array <ConsoleManager> screens;
+
+    //General constants
+    const DEFAULT_QUOTA = 130;
+
+    //Left display values
     int currentDay;
     int deadlineDay;
     int profit;
     int quota;
+    bool updateScreenOne;
 
-    //Center display variables
+    //Left display constants
+    const LEFTDISPLAY_LINECOUNT = 5;
+    const LEFTDISPLAY_CHARACTERCOUNT = 17;
+    const LEFTDISPLAY_SCREENSCALE = 0.15;
+    const LEFTDISPLAY_LINEOFFSET = 26.0 * LEFTDISPLAY_SCREENSCALE;
+    const LEFTDISPLAY_CHARACTEROFFSET = 16.0 * LEFTDISPLAY_SCREENSCALE;
+    const LEFTDISPLAY_MANAGERPOSX = 94;
+    const LEFTDISPLAY_MANAGERPOSY = -99;
+    const LEFTDISPLAY_MANAGERPOSZ = 45;
+    const LEFTDISPLAY_MANAGERANGLE = 225;
+    const LEFTDISPLAY_COLORTINT = "None";
 
-    //Right display variables
+    //Center display values
+    string orbitMoon;
+
+    bool updateScreenTwo;
+    
+
+    //Center display constants
+    const CENTERDISPLAY_LINECOUNT = 12;
+    const CENTERDISPLAY_CHARACTERCOUNT = 30;
+    const CENTERDISPLAY_SCREENSCALE = 0.19;
+    const CENTERDISPLAY_LINEOFFSET = 26.0 * CENTERDISPLAY_SCREENSCALE;
+    const CENTERDISPLAY_CHARACTEROFFSET = 16.0 * CENTERDISPLAY_SCREENSCALE;
+    const CENTERDISPLAY_MANAGERPOSX = 45;
+    const CENTERDISPLAY_MANAGERPOSY = -128.5;
+    const CENTERDISPLAY_MANAGERPOSZ = 84;
+    const CENTERDISPLAY_MANAGERANGLE = 180;
+    const CENTERDISPLAY_COLORTINT = "ConsoleBlue";
+
+    //Right display values
+
+
+    //for testing
+    const CYCLETICKS = 70;
+
+    override void BeginPlay(void)
+    {
+        orbitMoon = "16 Mancubus";
+
+        //Left display defaults
+        currentDay = 0;
+        deadlineDay = 3;
+        profit = 0;
+        quota = DEFAULT_QUOTA;
+
+        //Center display defaults
+
+
+        SpawnConsoleManagers();
+        updateScreenOne = true;
+        updateScreenTwo = true;
+    }
+
+    override void PostBeginPlay(void)
+    {
+        
+    }
+
+    override void Tick(void)
+    {
+        
+        if(level.time % cycleTicks == 0)
+        {
+            quota = random(100,99999);
+            profit = random(0,quota-1);
+            deadlineDay = random(1,7);
+            updateScreenOne = true;
+        }
+
+        //All screens are setup
+        if (screens.Size() > 1)
+        {
+            if(updateScreenOne && screens[0].consoleLines.Size() > 0)
+            {
+                string currentProfit = FormatValueWithSpaces(profit, 5);
+                string currentQuota = FormatValueWithSpaces(quota, 5);
+
+                screens[0].ClearStrings();
+                screens[0].consoleLines[0].PostString("Profit / Quota:");
+                screens[0].consoleLines[1].PostString("$" .. currentProfit .. " / $" .. currentQuota);
+                screens[0].consoleLines[3].PostString("Deadline:");
+                screens[0].consoleLines[4].PostString("  " .. deadlineDay - currentDay .. " DAYS");
+                updateScreenOne = false;
+            }
+            else if(updateScreenTwo && screens[1].consoleLines.Size() > 0)
+            {
+                screens[1].ClearStrings();
+                screens[1].consoleLines[0].PostString("Orbiting: " .. orbitMoon);
+                screens[1].consoleLines[2].PostString("POPULATION: The Company");
+                screens[1].consoleLines[4].PostString("CONDITIONS: Damp.");
+                screens[1].consoleLines[5].PostString("Really damp.");
+                screens[1].consoleLines[6].PostString("Seriously.");
+                screens[1].consoleLines[8].PostString("FAUNA: A variety of undersea");
+                screens[1].consoleLines[9].PostString("life, dominated by massive");
+                screens[1].consoleLines[10].PostString("predators.");
+                updateScreenTwo = false;
+            }
+        }
+    }
+
+    void SpawnConsoleManagers(void)
+    {
+        ConsoleManager leftManager = ConsoleManager(Actor.Spawn("ConsoleManager", (LEFTDISPLAY_MANAGERPOSX,LEFTDISPLAY_MANAGERPOSY,LEFTDISPLAY_MANAGERPOSZ), ALLOW_REPLACE));
+        leftManager.angle = LEFTDISPLAY_MANAGERANGLE;
+        leftManager.lineCount = LEFTDISPLAY_LINECOUNT;
+        leftManager.characterCount = LEFTDISPLAY_CHARACTERCOUNT;
+        leftManager.screenScale = LEFTDISPLAY_SCREENSCALE;
+        leftManager.lineOffset = LEFTDISPLAY_LINEOFFSET;
+        leftManager.characterOffset = LEFTDISPLAY_CHARACTEROFFSET;
+        leftManager.colorTint = LEFTDISPLAY_COLORTINT;
+
+        screens.Push(leftManager);
+
+
+        ConsoleManager centerManager = ConsoleManager(Actor.Spawn("ConsoleManager", (CENTERDISPLAY_MANAGERPOSX,CENTERDISPLAY_MANAGERPOSY,CENTERDISPLAY_MANAGERPOSZ), ALLOW_REPLACE));
+        centerManager.angle = CENTERDISPLAY_MANAGERANGLE;
+        centerManager.lineCount = CENTERDISPLAY_LINECOUNT;
+        centerManager.characterCount = CENTERDISPLAY_CHARACTERCOUNT;
+        centerManager.screenScale = CENTERDISPLAY_SCREENSCALE;
+        centerManager.lineOffset = CENTERDISPLAY_LINEOFFSET;
+        centerManager.characterOffset = CENTERDISPLAY_CHARACTEROFFSET;
+        centerManager.colorTint = CENTERDISPLAY_COLORTINT;
+
+        screens.Push(centerManager);
+
+
+    }
+
+    //produces a string with the int value and trailing spaces equal to characterCount
+    string FormatValueWithSpaces(int inValue, int characterCount)
+    {
+        string stringValue = String.Format("%d", inValue);
+        stringValue.Truncate(characterCount);
+        int neededSpaces = characterCount - stringValue.Length();
+        for(int i = 0; i < neededSpaces; i++)
+        {
+            stringValue.AppendCharacter(" ");
+        }
+        
+        return stringValue;
+    }
 }

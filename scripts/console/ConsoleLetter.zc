@@ -1,6 +1,7 @@
 Class ConsoleLetter : Actor
 {
     string character;
+    string colorTint;
 
     override void BeginPlay(void)
     {
@@ -18,6 +19,8 @@ Class ConsoleLetter : Actor
     {
         height 0;
         radius 0;
+        Translation "None";
+
         +WALLSPRITE
         +NOGRAVITY
         +BRIGHT
@@ -33,8 +36,13 @@ Class ConsoleLetter : Actor
             Loop;
         Letters:
             CONS ABCDEFGHIJKLMNOPQRSTUVWXYZ 1;
+            stop;
+        LowerLetters:
+            CONL ABCDEFGHIJKLMNOPQRSTUVWXYZ 1;
+            stop;
         Numbers:
             CONN ABCDEFGHIJ 1;
+            stop;
         Symbols:
             CSYM ABCDEFG 1;
             stop;
@@ -43,9 +51,11 @@ Class ConsoleLetter : Actor
     void UpdateCharacter(void)
     {
         string letterString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        string lowerLetterString = "abcdefghijklmnopqrstuvwxyz";
         string numberString = "0123456789";
         string symbolString = "$>:[]/*"; //Very angry symbol person with money hair
         int letterIndex = letterString.IndexOf(character);
+        int lowerLetterIndex = lowerLetterString.IndexOf(character);
         int numberIndex = numberString.IndexOf(character);
         int symbolIndex = symbolString.IndexOf(character);
 
@@ -53,6 +63,11 @@ Class ConsoleLetter : Actor
         {
             sprite = GetSpriteIndex("CONS");
             frame = letterIndex;
+        }
+        else if (lowerLetterIndex != -1)
+        {
+            sprite = GetSpriteIndex("CONL");
+            frame = lowerLetterIndex;
         }
         else if (numberIndex != -1)
         {
@@ -71,7 +86,7 @@ Class ConsoleLetter : Actor
         }
     }
 
-    void SetCharacter(string inCharacter)
+    void SetCharacter(string inCharacter, string inColorTint = "None")
     {
         if (inCharacter.Length() != 1)
         {
@@ -79,5 +94,6 @@ Class ConsoleLetter : Actor
         }
 
         character = inCharacter;
+        A_SetTranslation(colorTint);
     }
 }

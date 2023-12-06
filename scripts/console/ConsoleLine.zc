@@ -1,8 +1,9 @@
 Class ConsoleLine : Actor
 {
-    int characterLength;
+    int characterCount;
     double baseOffset;
     double screenScale;
+    string colorTint;
     array <ConsoleLetter> lineString;
 
     override void BeginPlay(void)
@@ -26,12 +27,13 @@ Class ConsoleLine : Actor
 
         Vector3 forwards = (cos(angle), sin(angle), 0);
 
-        for(int i = 0; i < characterLength; i++)
+        for(int i = 0; i < characterCount; i++)
         {
             ConsoleLetter character = ConsoleLetter(Actor.Spawn("ConsoleLetter", pos + currentOffset * forwards, ALLOW_REPLACE));
             //console.printf("Created character at (%f,%f,%f)",character.pos.x,character.pos.y,character.pos.z);
             character.scale = (screenScale, screenScale);
             character.angle = angle - 90;
+            character.colorTint = colorTint;
             lineString.Push(character);
             currentOffset += baseOffset;
         }
@@ -41,7 +43,7 @@ Class ConsoleLine : Actor
 
     void PostString(string input)
     {
-        input.Truncate(characterLength);
+        input.Truncate(characterCount);
         for(int i = 0; i < input.Length(); i++)
         {
             lineString[i].SetCharacter(input.Mid(i, 1));

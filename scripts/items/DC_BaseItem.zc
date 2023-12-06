@@ -56,12 +56,16 @@ class DC_BaseItem : Actor
         if (player)
         {
             bool success = player.AddItem(itemData);
-            console.printf("success? - " .. success);
+            if (success)
+            {
+                self.Destroy();
+            }
+            //console.printf("success? - " .. success);
         }
 
         //console.printf("item_name: %s \nitem_weight: %d \nitem_value: %d", itemData.name, itemData.weight, itemData.value);
         
-        self.Destroy();
+        
 
         return true;
     }

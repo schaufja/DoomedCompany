@@ -1,19 +1,42 @@
 Class ConsoleManager : Actor
 {
     int lineCount;
+    int characterCount;
+    double screenScale;
     double lineOffset;
     double characterOffset;
-    double screenScale;
+    string colorTint;
     array <ConsoleLine> consoleLines;
 
-    override void BeginPlay(void)
-    {
-        Super.BeginPlay();
-        screenScale = 0.15;
-        lineOffset = 26 * screenScale;
-        characterOffset = 16 * screenScale;
-        lineCount = 5;
+    bool isReady;
 
+    override void PostBeginPlay(void)
+    {
+        Super.PostBeginPlay();
+        
+        SetupLines();
+
+        isReady = true;
+    }
+
+    Default
+    {
+        height 0;
+        radius 0;
+        +NOGRAVITY
+        -SOLID
+    }
+
+    void ClearStrings(void)
+    {
+        for(int i = 0; i < consoleLines.Size(); i++)
+        {
+            consoleLines[i].ClearString();
+        }
+    }
+
+    void SetupLines(void)
+    {
         double currentOffset = 0;
 
         Vector3 forwards = (cos(angle), sin(angle), 0);
@@ -24,24 +47,12 @@ Class ConsoleManager : Actor
             line.screenScale = screenScale;
             line.angle = angle;
             line.baseOffset = characterOffset;
-            line.characterLength = 17;
+            line.characterCount = characterCount;
+            line.colorTint = colorTint;
             line.SetupString();
             //console.printf("Created line at (%f,%f,%f)",line.pos.x,line.pos.y,line.pos.z);
             consoleLines.Push(line);
             currentOffset -= lineOffset;
         }
-
-        consoleLines[0].PostString("PROFIT / QUOTA:");
-        consoleLines[1].PostString("$0     / $130  ");
-        consoleLines[3].PostString("DEADLINE:");
-        consoleLines[4].PostString("  3 DAYS");
-    }
-
-    Default
-    {
-        height 0;
-        radius 0;
-        +NOGRAVITY
-        -SOLID
     }
 }
