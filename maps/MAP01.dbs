@@ -33,9 +33,9 @@ maps
 		}
 		defaultfloortexture = "SLIME14";
 		defaultceiltexture = "FLOOR4_8";
-		defaulttoptexture = "METAL2";
-		defaultwalltexture = "METAL2";
-		defaultbottomtexture = "METAL2";
+		defaulttoptexture = "SUPPORT3";
+		defaultwalltexture = "SUPPORT3";
+		defaultbottomtexture = "SUPPORT3";
 		custombrightness = 196;
 		customfloorheight = 0;
 		customceilheight = 128;
@@ -49,9 +49,9 @@ maps
 		overridebrightness = false;
 		uselongtexturenames = false;
 		useresourcesinreadonlymode = false;
-		viewpositionx = -470.9418f;
-		viewpositiony = -72.66019f;
-		viewscale = 5.021862f;
+		viewpositionx = 5.290166f;
+		viewpositiony = 29.52707f;
+		viewscale = 11.03304f;
 		scriptcompiler = "zdoom_acs.cfg";
 		
 		grid
@@ -62,7 +62,7 @@ maps
 			backoffsety = 0;
 			backscalex = 100;
 			backscaley = 100;
-			gridsize = 8;
+			gridsize = 1;
 			gridrotate = 0;
 			gridoriginx = 0;
 			gridoriginy = 0;
@@ -115,7 +115,7 @@ maps
 				resource;
 				tabtype = 0;
 				scripttype = 1;
-				caretposition = 74;
+				caretposition = 41;
 				activetab = true;
 			}
 		}

@@ -16,8 +16,12 @@ Class ConsoleLetter : Actor
 
     Default
     {
+        height 0;
+        radius 0;
+        +WALLSPRITE
         +NOGRAVITY
         +BRIGHT
+        -SOLID
     }
 
     States
@@ -40,7 +44,7 @@ Class ConsoleLetter : Actor
     {
         string letterString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         string numberString = "0123456789";
-        string symbolString = "$>:[]/*";
+        string symbolString = "$>:[]/*"; //Very angry symbol person with money hair
         int letterIndex = letterString.IndexOf(character);
         int numberIndex = numberString.IndexOf(character);
         int symbolIndex = symbolString.IndexOf(character);

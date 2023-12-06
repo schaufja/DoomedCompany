@@ -12,6 +12,6 @@ gameinfo
 DoomEdNums
 {
 	21000 = "GameStateHandler"
-	21001 = "ConsoleLetter"
+	21001 = "ConsoleManager"
 	21002 = "ConsoleLine"
 }
