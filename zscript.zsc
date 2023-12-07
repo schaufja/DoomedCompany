@@ -19,6 +19,7 @@ version "4.5.0"
 
 #include "scripts/player/DC_StaminaToken.zc"
 #include "scripts/player/DC_BatteryToken.zc"
+#include "scripts/player/DC_RechargeToken.zc"
 #include "scripts/player/CompanyMan.zc"
 
 // MONSTERS

@@ -11,10 +11,10 @@ Vow - Forest/Dammed River - Easy 0
 Oath - Hexen/Forest - Easy random(5,26)
 
 Offense - Desert/Machinery - Intermediate 0
-
+ - Strife
 
 March - Swamp/Deep Pools - Intermediate 0
-
+ - Heretic
 
 Rend - Ice/Blizzard/Mansion Interior - Hard 550
  - Blood/

@@ -76,10 +76,10 @@ Class GameStateHandler : Actor
         
         if(level.time % cycleTicks == 0)
         {
-            quota = random(100,99999);
-            profit = random(0,quota-1);
-            deadlineDay = random(1,7);
-            updateScreenOne = true;
+            //quota = random(100,99999);
+            //profit = random(0,quota-1);
+            //deadlineDay = random(1,7);
+            //updateScreenOne = true;
         }
 
         //All screens are setup
@@ -102,12 +102,12 @@ Class GameStateHandler : Actor
                 screens[1].ClearStrings();
                 screens[1].consoleLines[0].PostString("Orbiting: " .. orbitMoon);
                 screens[1].consoleLines[2].PostString("POPULATION: The Company");
-                screens[1].consoleLines[4].PostString("CONDITIONS: Damp.");
-                screens[1].consoleLines[5].PostString("Really damp.");
-                screens[1].consoleLines[6].PostString("Seriously.");
+                screens[1].consoleLines[4].PostString("CONDITIONS: Damp");
+                screens[1].consoleLines[5].PostString("Really damp");
+                screens[1].consoleLines[6].PostString("Seriously");
                 screens[1].consoleLines[8].PostString("FAUNA: A variety of undersea");
-                screens[1].consoleLines[9].PostString("life, dominated by massive");
-                screens[1].consoleLines[10].PostString("predators.");
+                screens[1].consoleLines[9].PostString("life dominated by massive");
+                screens[1].consoleLines[10].PostString("predators");
                 updateScreenTwo = false;
             }
         }

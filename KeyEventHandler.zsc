@@ -9,8 +9,9 @@ class MKeyEventHandler : EventHandler
 
             //console.printf("Debug function");
             let player = CompanyMan(players[e.Player].mo);
-            int itemValue = player.inventory[player.selectedItem].value;
-            console.printf("Value: %d", itemValue);
+            player.inventory[player.selectedItem].batteryCharge = player.inventory[player.selectedItem].batteryCharge / 9;
+            int charge = player.inventory[player.selectedItem].batteryCharge;
+            console.printf("ZAP! New Charge: %d", charge);
         }
         if (e.Name == "dc_drop")
         {

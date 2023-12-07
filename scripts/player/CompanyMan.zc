@@ -5,7 +5,7 @@ Class CompanyMan : DoomPlayer
 	int staminaRegenCounter;
 	const STAMINA_REGEN_RATE = 4; //how many ticks it takes before regenerating a point of stamina
 	int regenDelayCounter;
-	const STAMINA_DELAY = 45; //how many ticks before starting to regenerate stamina
+	const STAMINA_DELAY = 60; //how many ticks before starting to regenerate stamina
 	int staminaDrainCounter;
 	const STAMINA_DRAIN_RATE = 2; //how many ticks before draining a stamina point while sprinting
 	bool batteryDrain;
@@ -14,6 +14,7 @@ Class CompanyMan : DoomPlayer
 	array <ItemData> inventory;
 	int inventorySlots;
 	int selectedItem;
+	int activeIndex;
 	int currentWeight;
 	double doubleWeight;
 	double weightSpeedFactor;
@@ -34,6 +35,7 @@ Class CompanyMan : DoomPlayer
 		batteryDrain = false;
 		inventorySlots = 4;
 		selectedItem = 0;
+		activeIndex = -1;
 
 		SetupInventory();
 	}
@@ -44,19 +46,21 @@ Class CompanyMan : DoomPlayer
 		
 		DoSprint();
 
-		int activeFlashlightIndex = GetActiveFlashlightIndex();
+		activeIndex = GetActiveIndex();
 
-		if((activeFlashlightIndex != -1))
+		if((activeIndex != -1) && (inventory[activeIndex].itemType == ItemTypes.FLASHLIGHT))
 		{
-			A_AttachLight("AltFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 41), 2.0, 8, 32, pitch);
-			//if all four item are active flashlights, create a death beam to harm bracken
+			A_AttachLight("PlayerFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 41), 2.0, 8, 32, pitch);
+			//if all four items are active flashlights, create a death beam to harm bracken
 		}
 		else
 		{
-			A_RemoveLight("AltFlashlight");
+			A_RemoveLight("PlayerFlashlight");
 		}
 
 		DoBatteryDrain();
+
+		DoRecharge();
 
 		UpdateWeight();
 	}
@@ -173,15 +177,15 @@ Class CompanyMan : DoomPlayer
 		//console.printf("isActive: %d",inventory[selectedItem].isActive);
 	}
 
-	int GetActiveFlashlightIndex(void)
+	int GetActiveIndex(void)
 	{
 		for(int i = 0; i < inventory.Size(); i++)
 		{
-			bool isFlashlight = inventory[i].itemType == ItemTypes.FLASHLIGHT;
+			//bool isFlashlight = inventory[i].itemType == ItemTypes.FLASHLIGHT;
 			bool isActive = inventory[i].isActive;
 			bool hasBatteryCharge = inventory[i].batteryCharge > 0;
 
-			if(isFlashlight && isActive && hasBatteryCharge)
+			if(isActive && hasBatteryCharge)
 			{
 				return i;
 			}
@@ -212,12 +216,12 @@ Class CompanyMan : DoomPlayer
 				Speed = 2.0 * weightSpeedFactor;
 			}
 			staminaDrainCounter++;
-			regenDelayCounter = STAMINA_DELAY;
+			//regenDelayCounter = STAMINA_DELAY;
 		}
 		else if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED) && CountInv("DC_StaminaToken") == 0)
 		{
-			//draining all your stamina increases the regeneration delay
-			regenDelayCounter = STAMINA_DELAY * 3;
+			//draining all your stamina adds a regeneration delay
+			regenDelayCounter = STAMINA_DELAY;
 		}
 		else
 		{
@@ -247,6 +251,16 @@ Class CompanyMan : DoomPlayer
 			{
 				inventory[i].batteryCharge--;
 			}
+		}
+	}
+
+	void DoRecharge(void)
+	{
+		if(CountInv("DC_RechargeToken") > 0)
+		{
+			inventory[selectedItem].batteryCharge = inventory[selectedItem].batteryMax;
+			inventory[selectedItem].isActive = false;
+			TakeInventory("DC_RechargeToken", 1);
 		}
 	}
 
