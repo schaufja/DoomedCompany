@@ -24,3 +24,28 @@ Dine - Snow/Blizzard/Mansion Interior - Hard 600
 
 Titan - Flat Snow Wasteland/Large Industrial Interior - Hard 700
 
+
+
+
+======== TODO ========
+Import Half-Life textures for ship
+Build simple item ping
+Show selected item value and name on hud
+Setup per-tool overlays in DC_Hands OR Explore separate weapons options with give/take inventory
+Setup space skybox
+Setup space ship cam
+Build full scale Mancubus moon
+Build dummy moon room for loot generation
+
+======== Future Features ========
+Item ping with tooltip
+Ship and Entrance ping through walls with hud overlay
+LinePortal dungeon generation prototype
+
+======== Moons ========
+Insight
+Arboretum
+Oath
+
+
+======== Monsters ========
