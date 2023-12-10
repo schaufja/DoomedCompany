@@ -1,22 +1,22 @@
-class Flashlight_Basic : DC_BaseItem
+class Flashlight_Pro : DC_BaseItem
 {
     override void BeginPlay(void)
 	{
 		Super.BeginPlay();
 
-        int maxPower = 35 * 60 * 2; //two minutes of battery life
+        int maxPower = 35 * 60 * 4; //four minutes of battery life
 
         itemData = new("ItemData");
-		itemData.name = "Basic Flashlight";
-        itemData.weight = 0;
-        itemData.value = 6;
+		itemData.name = "Pro Flashlight";
+        itemData.weight = 5;
+        itemData.value = random(3,11);
         itemData.batteryCharge = maxPower;
         itemData.batteryMax = maxPower; 
         itemData.isActive = false;
-        itemData.spriteName = "AFLT";
+        itemData.spriteName = "BFLT";
         itemData.itemType = ItemTypes.FLASHLIGHT;
         
-        itemData.handSprite = "FHLTA";
+        itemData.handSprite = "FHLTB";
 	}
     
     override void Tick(void)
@@ -42,12 +42,12 @@ class Flashlight_Basic : DC_BaseItem
     States
     {
         Spawn:
-            FLAS A 0;
+            FLAS B 0;
         Stay:
-            #### A 1;
+            #### # 1;
             Loop;
         Icon:
-            AFLT A 0;
+            BFLT A 0;
             Stop;
     }
 }

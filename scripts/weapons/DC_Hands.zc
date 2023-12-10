@@ -1,5 +1,37 @@
 Class DC_Hands : Fist
 {
+	string itemSpriteName;
+
+	override void BeginPlay(void)
+	{
+		
+	}
+
+	action void A_SetGraphic()
+	{
+		
+		let psp = Invoker.Owner.player.FindPSprite(PSP_WEAPON);
+		let companyMan = CompanyMan(Invoker.Owner.player.mo);
+		string itemSprite = companyMan.handSprite;
+		
+		psp.Sprite = GetSpriteIndex(invoker.GetItemSprite(itemSprite));
+		psp.Frame = invoker.GetItemSpriteFrame();
+		
+	}
+
+	string GetItemSprite(string handSprite)
+	{
+		itemSpriteName = handSprite;
+		return itemSpriteName.Mid(0,4);
+	}
+
+	int GetItemSpriteFrame(void)
+	{
+		string letterString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		int letterIndex = letterString.IndexOf(itemSpriteName.Mid(4,1));
+		return letterIndex;
+	}
+
     Default
     {
         +WEAPON.NOALERT
@@ -8,24 +40,31 @@ Class DC_Hands : Fist
     States
 	{
 	Ready:
-		PUNG A 1 A_WeaponReady;
+		PUNG A 0;
+		#### A 1 
+		{
+			A_SetGraphic();
+			A_WeaponReady();
+		}
 		Loop;
 	Deselect:
-		PUNG A 1 A_Lower;
+		#### # 1 A_Lower;
 		Loop;
 	Select:
-		PUNG A 1 A_Raise;
+		PUNG A 0;
+		#### # 1 A_Raise; 
 		Loop;
 	Fire:
-		PUNG B 4;
-		PUNG C 4 
+		#### # 4 
         {
             let companyMan = CompanyMan(self);
             companyMan.ToggleItemActive();
         }
-		PUNG D 5;
-		PUNG C 4;
-		PUNG B 5 A_ReFire;
+		#### # 5 A_ReFire;
+		Goto Ready;
+
+	Flashlights:
+		FHLT A 1;
 		Goto Ready;
 	}
 }

@@ -11,6 +11,9 @@ class ItemData
     int batteryMax;
     bool isActive;
     int itemType;
+
+    //HUD display
+    string handSprite; //5 characters, including frame
 }
 
 class ItemTypes
@@ -30,15 +33,16 @@ class DC_BaseItem : Actor
 		Super.BeginPlay();
 
         itemData = new("ItemData");
-		itemData.name = "Base Item (You shouldn't see this)";
+		itemData.name = "Base Item";
         itemData.weight = 71;
-        itemData.value = 6;
+        itemData.value = 132;
         itemData.spriteName = "CELP";
         
         itemData.batteryCharge = -1;
         itemData.batteryMax = -1;
         itemData.isActive = false;
         itemData.itemType = ItemTypes.JUNK;
+        itemData.handSprite = "CELPA";
 	}
 
     //not intended to be overridden by children

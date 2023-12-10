@@ -4,6 +4,7 @@ class CompanyHUD : DoomStatusBar
 	const UI_HEIGHT = 300;
 
 	HUDFont weightFont;
+	HUDFont itemFont;
 
 	int flags;
 	double uiScale;
@@ -12,11 +13,23 @@ class CompanyHUD : DoomStatusBar
 	double iconAlpha;
 	bool iconFadeOut;
 
+	//Font stuff
+	font fnt;
+	font bigFont;
+
+	CompanyMan companyMan;
+
 	override void Init(void)
 	{
 		Super.Init();
 		iconAlpha = 1.0;
 		iconFadeOut = true;
+
+		//setup fonts
+		fnt = "CONFONT";
+		bigFont = "BIGFONT";
+		weightFont = HUDFont.Create(fnt);
+		itemFont = HUDFont.Create(bigFont);
 	}
 
 	override void Tick(void)
@@ -35,16 +48,16 @@ class CompanyHUD : DoomStatusBar
 	
 	void DrawCompanyHUD(void)
 	{	
-		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
+		//get the player
+		companyMan = CompanyMan(CPlayer.mo);
 
-		font fnt = "CONFONT";
-		weightFont = HUDFont.Create(fnt);		
+		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;	
 
 		int healthX = 80;
 		int healthY = 80;
 		int staminaX = 28;
 		int staminaY = 58;
-		
+
 		DrawImage("sprites/ui/health_outline.png", (healthX, healthY), flags, 1, (-1, -1), (uiScale, uiScale));
 		DrawImage("sprites/ui/health_critical.png", (healthX, healthY), flags, (1 - (CPlayer.health / 100.0)), (-1, -1), (uiScale, uiScale));
 		
@@ -194,8 +207,7 @@ class CompanyHUD : DoomStatusBar
 			default:
 				break;
 		}
-		
-		let companyMan = CompanyMan(CPlayer.mo);
+
 		int currentWeight = companyMan.currentWeight;
 
 		DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags);
@@ -203,16 +215,20 @@ class CompanyHUD : DoomStatusBar
 		DrawBatteryBar();
 		
 		DrawInventorySlots();
+
+		DrawItemPrompts();
+		DrawItemValue();
 	}
 
 	void DrawBatteryBar(void)
 	{
+		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
+
 		int batteryIconX = 36;
 		int batteryIconY = 18;
 		int batteryBarX = 40;
 		int batteryBarY = 48;
 
-		let companyMan = CompanyMan(CPlayer.mo);
 		int activeIndex = companyMan.activeIndex;
 		double batteryCharge;
 		double batteryMax;
@@ -275,7 +291,6 @@ class CompanyHUD : DoomStatusBar
 		int xOffset = -96; // for four total slots
 		int yOffset = -56;
 
-		let companyMan = CompanyMan(CPlayer.mo);
 		int selectedItem = companyMan.selectedItem;
 
 		for(int i = 0; i < companyMan.inventorySlots; i++)
@@ -297,6 +312,45 @@ class CompanyHUD : DoomStatusBar
 
 		DrawImage("sprites/ui/item_frame.png", (xPos, yPos), flags, 1, (-1, -1), (myScale, myScale));
 		DrawImage(spriteName, (xPos, yPos), flags, 1, (-1, -1), (myScale, myScale));
+	}
+
+	void DrawItemPrompts(void)
+	{
+		flags = DI_SCREEN_LEFT_TOP;
+		string itemName = companyMan.inventory[companyMan.selectedItem].name;
+		int itemType = companyMan.inventory[companyMan.selectedItem].itemType;
+
+		int key1;
+        int key2;
+
+        [key1, key2] = Bindings.getKeysForCommand("dc_drop");
+        String dropString = KeyBindings.NameKeys(key1, key2);
+
+		[key1, key2] = Bindings.getKeysForCommand("+attack");
+		String activateString = KeyBindings.NameKeys(key1, 0);
+
+		if (itemName != "")
+		{
+			DrawString(weightFont, ("Drop " .. itemName .. " [" .. dropString .. "]"), (16, 176), flags);
+			if(itemType != ItemTypes.JUNK)
+			{
+				DrawString(weightFont, ("Use " .. itemName .. " [" .. activateString .. "]"), (16, 192), flags);
+			}
+		}
+	}
+
+	void DrawItemValue(void)
+	{
+		flags = DI_SCREEN_LEFT_BOTTOM;
+		int itemValue = companyMan.inventory[companyMan.selectedItem].value;
+		string itemName = companyMan.inventory[companyMan.selectedItem].name;
+
+		if(itemName == "")
+		{
+			return;
+		}
+
+		DrawString(itemFont, ("Value: " .. itemValue), (24, -24), flags);
 	}
 
 	//display label maker string interface

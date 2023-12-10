@@ -13,6 +13,7 @@ version "4.5.0"
 
 #include "scripts/items/DC_BaseItem.zc"
 #include "scripts/items/Flashlight_Basic.zc"
+#include "scripts/items/Flashlight_Pro.zc"
 //#include "scripts/items/LabelMaker.zc"
 
 #include "scripts/weapons/DC_Hands.zc"

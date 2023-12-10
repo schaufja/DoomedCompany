@@ -8,26 +8,35 @@ class MKeyEventHandler : EventHandler
         {
 
             //console.printf("Debug function");
-            let player = CompanyMan(players[e.Player].mo);
-            player.inventory[player.selectedItem].batteryCharge = player.inventory[player.selectedItem].batteryCharge / 9;
+            let player = CompanyMan(players[consoleplayer].mo);
             int charge = player.inventory[player.selectedItem].batteryCharge;
-            console.printf("ZAP! New Charge: %d", charge);
+            console.printf("Charge: %d", charge);
         }
         if (e.Name == "dc_drop")
         {
-            CompanyMan player = CompanyMan(players[e.Player].mo);
-            DropItem(player);            
+            CompanyMan player = CompanyMan(players[consoleplayer].mo);
+            DropItem(player);         
         }
         if (e.Name == "dc_itemnext")
         {
-            let player = CompanyMan(players[e.Player].mo);
+            let player = CompanyMan(players[consoleplayer].mo);
             player.NextItem();
         }
         if (e.Name == "dc_itemprev")
         {
-            let player = CompanyMan(players[e.Player].mo);
+            let player = CompanyMan(players[consoleplayer].mo);
             player.PrevItem();
         }
+    }
+
+    override bool inputProcess(InputEvent event)
+    {
+        let player = CompanyMan(players[consoleplayer].mo);
+        if (event.type != InputEvent.Type_KeyDown) return false;
+
+        int key = event.keyScan;
+
+        return false;
     }
 
     void DropItem(CompanyMan player)
@@ -60,4 +69,6 @@ class MKeyEventHandler : EventHandler
 
         player.RemoveItem(player.selectedItem);
     }
+
+
 }
