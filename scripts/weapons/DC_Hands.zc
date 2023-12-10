@@ -13,10 +13,17 @@ Class DC_Hands : Fist
 		let psp = Invoker.Owner.player.FindPSprite(PSP_WEAPON);
 		let companyMan = CompanyMan(Invoker.Owner.player.mo);
 		string itemSprite = companyMan.handSprite;
-		
-		psp.Sprite = GetSpriteIndex(invoker.GetItemSprite(itemSprite));
-		psp.Frame = invoker.GetItemSpriteFrame();
-		
+
+		if(itemSprite != "")
+		{
+			psp.Sprite = GetSpriteIndex(invoker.GetItemSprite(itemSprite));
+			psp.Frame = invoker.GetItemSpriteFrame();
+		}
+		else
+		{
+			psp.Sprite = GetSpriteIndex("PUNG");
+			psp.Frame = 0;
+		}
 	}
 
 	string GetItemSprite(string handSprite)

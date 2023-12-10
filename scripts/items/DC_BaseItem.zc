@@ -35,14 +35,14 @@ class DC_BaseItem : Actor
         itemData = new("ItemData");
 		itemData.name = "Base Item";
         itemData.weight = 71;
-        itemData.value = 132;
+        itemData.value = random(0,999);
         itemData.spriteName = "CELP";
         
         itemData.batteryCharge = -1;
         itemData.batteryMax = -1;
         itemData.isActive = false;
         itemData.itemType = ItemTypes.JUNK;
-        itemData.handSprite = "CELPA";
+        itemData.handSprite = "";
 	}
 
     //not intended to be overridden by children

@@ -223,10 +223,11 @@ Class CompanyMan : DoomPlayer
 				Speed = 2.0 * weightSpeedFactor;
 			}
 			staminaDrainCounter++;
-			//regenDelayCounter = STAMINA_DELAY;
+			regenDelayCounter = 5;
 		}
 		else if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED) && CountInv("DC_StaminaToken") == 0)
 		{
+			Speed = 1.0 * weightSpeedFactor;
 			//draining all your stamina adds a regeneration delay
 			regenDelayCounter = STAMINA_DELAY;
 		}
