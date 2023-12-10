@@ -218,6 +218,8 @@ class CompanyHUD : DoomStatusBar
 
 		DrawItemPrompts();
 		DrawItemValue();
+
+		DrawItemInHand();
 	}
 
 	void DrawBatteryBar(void)
@@ -351,6 +353,16 @@ class CompanyHUD : DoomStatusBar
 		}
 
 		DrawString(itemFont, ("Value: " .. itemValue), (24, -24), flags);
+	}
+
+	void DrawItemInHand(void)
+	{
+		flags = DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_CENTER;
+		string spriteName = companyMan.inventory[companyMan.selectedItem].spriteName .. "A0";
+		if(companyMan.inventory[companyMan.selectedItem].handSprite == "HNDOA")
+		{
+			DrawImage(spriteName, (-160, -130), flags, 1, (-1, -1), (uiScale * 2, uiScale * 2));
+		}
 	}
 
 	//display label maker string interface

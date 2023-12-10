@@ -121,10 +121,12 @@ Class CompanyMan : DoomPlayer
 			empty.value = 0;
 			empty.spriteName = "TNT1";
 			empty.className = "";
+
 			empty.batteryCharge = -1;
 			empty.batteryMax = -1;
 			empty.isActive = false;
 			empty.itemType = ItemTypes.NONE;
+			
 			empty.handSprite = "PUNGA";
 
 			inventory[itemIndex] = empty;

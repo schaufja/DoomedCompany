@@ -1,5 +1,8 @@
 class ItemData
 {	
+    //NOTE
+    //If you add anything to this you have to update AddItem and RemoveItem to update the properties.
+    
     string name;
 	int weight;
     int value;
@@ -42,7 +45,7 @@ class DC_BaseItem : Actor
         itemData.batteryMax = -1;
         itemData.isActive = false;
         itemData.itemType = ItemTypes.JUNK;
-        itemData.handSprite = "";
+        itemData.handSprite = "HNDOA";
 	}
 
     //not intended to be overridden by children

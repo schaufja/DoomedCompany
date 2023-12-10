@@ -14,14 +14,15 @@ Class DC_Hands : Fist
 		let companyMan = CompanyMan(Invoker.Owner.player.mo);
 		string itemSprite = companyMan.handSprite;
 
-		if(itemSprite != "")
+		if(itemSprite != "HNDOA")
 		{
 			psp.Sprite = GetSpriteIndex(invoker.GetItemSprite(itemSprite));
 			psp.Frame = invoker.GetItemSpriteFrame();
 		}
 		else
 		{
-			psp.Sprite = GetSpriteIndex("PUNG");
+			
+			psp.Sprite = GetSpriteIndex("HNDO");
 			psp.Frame = 0;
 		}
 	}
@@ -68,6 +69,10 @@ Class DC_Hands : Fist
             companyMan.ToggleItemActive();
         }
 		#### # 5 A_ReFire;
+		Goto Ready;
+	//For display
+	OpenHand:
+		HNDO A 1;
 		Goto Ready;
 
 	Flashlights:
