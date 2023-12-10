@@ -59,7 +59,8 @@ Class CompanyMan : DoomPlayer
 		}
 
 		handSprite = inventory[selectedItem].handSprite;
-		console.printf("handSprite: %s", handSprite);
+
+		DoSprint();
 
 		DoBatteryDrain();
 
