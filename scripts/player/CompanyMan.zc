@@ -25,6 +25,8 @@ Class CompanyMan : DoomPlayer
 	//interface
 	string toolTip;
 	int toolTipTimer;
+	int itemCycleDelay;
+	CONST BASE_CYCLE_DELAY = 4;
 
 	//misc func stuff
 	bool allFlashlightState;
@@ -48,6 +50,7 @@ Class CompanyMan : DoomPlayer
 		activeIndex = -1;
 		toolTip = "";
 		toolTipTimer = 0;
+		itemCycleDelay = 0;
 		allFlashlightState = false;
 
 		SetupInventory();
@@ -82,6 +85,8 @@ Class CompanyMan : DoomPlayer
 		DoHeavy();
 
 		DoToolTip();
+
+		itemCycleDelay--;
 	}
 
 	void SetupInventory(void)
@@ -106,8 +111,7 @@ Class CompanyMan : DoomPlayer
 		//If our hands are full, we can't add any items.
 		if(handsFull)
 		{
-			toolTip = "Hands Full";
-			toolTipTImer = 70;
+			Tooltip_HandsFull();
 			return false;
 		}
 
@@ -135,7 +139,7 @@ Class CompanyMan : DoomPlayer
 				selectedItem = emptySlot;
 			}
 
-			if(inventory[emptySlot].itemType == ItemTypes.NOISY)
+			if(inventory[emptySlot].itemType == ItemTypes.NOISY && emptySlot == selectedItem)
 			{
 				PlayItemSound(inventory[emptySlot].soundName);
 			}
@@ -191,7 +195,7 @@ Class CompanyMan : DoomPlayer
 
 	void NextItem(void)
 	{
-		if(handsFull)
+		if(handsFull || itemCycleDelay > 0)
 		{
 			return;
 		}
@@ -205,6 +209,8 @@ Class CompanyMan : DoomPlayer
 			selectedItem--;
 		}
 
+		itemCycleDelay = BASE_CYCLE_DELAY;
+
 		if(inventory[selectedItem].itemType == ItemTypes.NOISY)
 		{
 			PlayItemSound(inventory[selectedItem].soundName);
@@ -213,7 +219,7 @@ Class CompanyMan : DoomPlayer
 
 	void PrevItem(void)
 	{
-		if(handsFull)
+		if(handsFull || itemCycleDelay > 0)
 		{
 			return;
 		}
@@ -226,6 +232,8 @@ Class CompanyMan : DoomPlayer
 		{
 			selectedItem++;
 		}
+
+		itemCycleDelay = BASE_CYCLE_DELAY;
 
 		if(inventory[selectedItem].itemType == ItemTypes.NOISY)
 		{
@@ -378,6 +386,11 @@ Class CompanyMan : DoomPlayer
 
 	void DoToolTip(void)
 	{
+		if(CountInv("DC_HandsfullToken") > 0)
+		{
+			Tooltip_HandsFull();
+			TakeInventory("DC_HandsfullToken", 1);
+		}
 		if(toolTip == "")
 		{
 			return;
@@ -399,5 +412,12 @@ Class CompanyMan : DoomPlayer
 		{
 			A_StartSound(soundName, CHAN_AUTO, volume: 0.8);
 		}
+	}
+
+	//tooltip functions
+	void Tooltip_HandsFull(void)
+	{
+		toolTip = "Hands Full";
+		toolTipTImer = 70;
 	}
 }

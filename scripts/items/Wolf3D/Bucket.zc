@@ -1,34 +1,34 @@
-class Radio1 : DC_BaseItem
+class Bucket : DC_BaseItem
 {
     override void BeginPlay(void)
 	{
 		Super.BeginPlay();
 
-		itemData.name = "IS-5592 Radio";
-        itemData.weight = 13;
-        itemData.value = random(45,69);
-        itemData.spriteName = "RADIA0";
+		itemData.name = "Contaminated Bucket";
+        itemData.weight = 16;
+        itemData.value = random(20,40);
+        itemData.spriteName = "BUCKA0";
 
         itemData.batteryCharge = -1;
         itemData.batteryMax = -1; 
         itemData.isActive = false;
-        itemData.itemType = ItemTypes.NOISY;
+        itemData.itemType = ItemTypes.JUNK;
         
         itemData.handSprite = "HNDOA";
         itemData.handSpriteScale = 8.0;
 
-        itemData.soundName = "items/radiovoice";
+        itemData.soundName = "";
 	}
 
     States
     {
         Spawn:
-            RADI A 0;
+            BUCK A 0;
         Stay:
             #### # 1;
             Loop;
         Icon:
-            RADI A 0;
+            BUCK A 0;
             Stop;
     }
 }

@@ -231,13 +231,13 @@ class CompanyHUD : DoomStatusBar
 		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
 		int currentWeight = companyMan.currentWeight;
 
-		if(currentWeight > 50)
-		{
-			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_GOLD);
-		}
-		else if(currentWeight > 100)
+		if(currentWeight > 100)
 		{
 			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_BRICK);
+		}
+		else if(currentWeight > 50)
+		{
+			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_GOLD);
 		}
 		else
 		{
@@ -381,17 +381,17 @@ class CompanyHUD : DoomStatusBar
 
 	void DrawItemInHand(void)
 	{
-		flags = DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_CENTER;
+		flags = DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_BOTTOM;
 		string spriteName = companyMan.inventory[companyMan.selectedItem].spriteName;
 		double spriteScale = companyMan.inventory[companyMan.selectedItem].handSpriteScale;
 		if(companyMan.inventory[companyMan.selectedItem].handSprite == "HNDOA")
 		{
-			DrawImage(spriteName, (-160, -180), flags, 1, (-1, -1), (spriteScale, spriteScale));
+			DrawImage(spriteName, (-160, -110), flags, 1, (-1, -1), (spriteScale, spriteScale));
 		}
 		else if(companyMan.inventory[companyMan.selectedItem].handSprite == "TNT1A")
 		{
-			flags = DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER;
-			DrawImage(spriteName, (0, 0), flags, 1, (-1, -1), (spriteScale, spriteScale));
+			flags = DI_SCREEN_CENTER_BOTTOM|DI_ITEM_BOTTOM;
+			DrawImage(spriteName, (0, 160), flags, 1, (-1, -1), (spriteScale, spriteScale));
 		}
 	}
 

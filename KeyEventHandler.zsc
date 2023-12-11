@@ -33,16 +33,6 @@ class MKeyEventHandler : EventHandler
         }
     }
 
-    override bool inputProcess(InputEvent event)
-    {
-        let player = CompanyMan(players[consoleplayer].mo);
-        if (event.type != InputEvent.Type_KeyDown) return false;
-
-        int key = event.keyScan;
-
-        return false;
-    }
-
     void DropItem(CompanyMan player)
     {
         double heightOffset = player.ViewHeight - 12;

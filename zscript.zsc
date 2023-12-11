@@ -19,12 +19,15 @@ version "4.5.0"
 
 //Items - Wolf3D
 #include "scripts/items/Wolf3D/Radio1.zc"
+#include "scripts/items/Wolf3D/PottedPlant.zc"
+#include "scripts/items/Wolf3D/Bucket.zc"
 
 #include "scripts/weapons/DC_Hands.zc"
 
 #include "scripts/player/DC_StaminaToken.zc"
 #include "scripts/player/DC_BatteryToken.zc"
 #include "scripts/player/DC_RechargeToken.zc"
+#include "scripts/player/DC_HandsfullToken.zc"
 #include "scripts/player/CompanyMan.zc"
 
 // MONSTERS

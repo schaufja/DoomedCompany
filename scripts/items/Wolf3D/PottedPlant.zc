@@ -1,0 +1,34 @@
+class PottedPlant : DC_BaseItem
+{
+    override void BeginPlay(void)
+	{
+		Super.BeginPlay();
+
+		itemData.name = "Calcified Ficus";
+        itemData.weight = 23;
+        itemData.value = random(100,120);
+        itemData.spriteName = "PLNTA0";
+
+        itemData.batteryCharge = -1;
+        itemData.batteryMax = -1; 
+        itemData.isActive = false;
+        itemData.itemType = ItemTypes.JUNK;
+        
+        itemData.handSprite = "TNT1A";
+        itemData.handSpriteScale = 16.0;
+
+        itemData.soundName = "";
+	}
+
+    States
+    {
+        Spawn:
+            PLNT A 0;
+        Stay:
+            #### # 1;
+            Loop;
+        Icon:
+            PLNT A 0;
+            Stop;
+    }
+}
