@@ -17,6 +17,8 @@ class CompanyHUD : DoomStatusBar
 	font fnt;
 	font bigFont;
 
+	double toolTipAlpha;
+
 	CompanyMan companyMan;
 
 	override void Init(void)
@@ -208,9 +210,7 @@ class CompanyHUD : DoomStatusBar
 				break;
 		}
 
-		int currentWeight = companyMan.currentWeight;
-
-		DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags);
+		DrawWeight();
 
 		DrawBatteryBar();
 		
@@ -224,6 +224,25 @@ class CompanyHUD : DoomStatusBar
 
 		//Drawn on top
 		DrawToolTip();
+	}
+
+	void DrawWeight(void)
+	{
+		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
+		int currentWeight = companyMan.currentWeight;
+
+		if(currentWeight > 50)
+		{
+			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_GOLD);
+		}
+		else if(currentWeight > 100)
+		{
+			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_BRICK);
+		}
+		else
+		{
+			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags);
+		}
 	}
 
 	void DrawBatteryBar(void)
@@ -314,8 +333,6 @@ class CompanyHUD : DoomStatusBar
 		double selectedScale = 1.33;
 		double myScale = isSelected ? selectedScale : uiScale;
 
-		spriteName = (spriteName .. "A0");
-
 		string frames = "ABCD";
 		string frameName = "FRAM" .. frames.Mid(startFrame,1) .. "0";
 
@@ -359,13 +376,13 @@ class CompanyHUD : DoomStatusBar
 			return;
 		}
 
-		DrawString(itemFont, ("Value: " .. itemValue), (24, -24), flags);
+		DrawString(itemFont, ("Value: " .. itemValue), (24, -24), flags, Font.CR_UNTRANSLATED, 1, -1, 4, (0.9,0.9));
 	}
 
 	void DrawItemInHand(void)
 	{
 		flags = DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_CENTER;
-		string spriteName = companyMan.inventory[companyMan.selectedItem].spriteName .. "A0";
+		string spriteName = companyMan.inventory[companyMan.selectedItem].spriteName;
 		double spriteScale = companyMan.inventory[companyMan.selectedItem].handSpriteScale;
 		if(companyMan.inventory[companyMan.selectedItem].handSprite == "HNDOA")
 		{

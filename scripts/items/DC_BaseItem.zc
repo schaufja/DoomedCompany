@@ -37,10 +37,12 @@ class DC_BaseItem : Actor
 		Super.BeginPlay();
 
         itemData = new("ItemData");
+
+        //Override this part below
 		itemData.name = "Base Item";
         itemData.weight = 71;
         itemData.value = random(0,999);
-        itemData.spriteName = "CELP";
+        itemData.spriteName = "CELPA0";
         
         itemData.batteryCharge = -1;
         itemData.batteryMax = -1;

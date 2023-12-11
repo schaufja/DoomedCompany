@@ -1,4 +1,4 @@
-class Flashlight_Pro : DC_BaseItem
+class Flashlight_Pro : Flashlight_Basic
 {
     override void BeginPlay(void)
 	{
@@ -6,39 +6,20 @@ class Flashlight_Pro : DC_BaseItem
 
         int maxPower = 35 * 60 * 4; //four minutes of battery life
 
-        itemData = new("ItemData");
 		itemData.name = "Pro Flashlight";
         itemData.weight = 5;
         itemData.value = random(3,11);
+        itemData.spriteName = "BFLTA0";
+
         itemData.batteryCharge = maxPower;
         itemData.batteryMax = maxPower; 
         itemData.isActive = false;
-        itemData.spriteName = "BFLT";
         itemData.itemType = ItemTypes.FLASHLIGHT;
         
         itemData.handSprite = "FHLTB";
+        itemData.handSpriteScale = 1.0;
 	}
-    
-    override void Tick(void)
-    {
-        Super.Tick();
-        if(itemData.isActive && itemData.batteryCharge > 0)
-        {
-            itemData.batteryCharge--;
-            A_AttachLight("AltFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 0), 2.0, 8, 32, pitch);
-        }
-        else
-        {
-            A_RemoveLight("AltFlashlight");
-        }
-    }
 
-    Default
-    {
-        Scale 0.5;
-        Mass 100;
-    }
-    
     States
     {
         Spawn:
@@ -47,7 +28,7 @@ class Flashlight_Pro : DC_BaseItem
             #### # 1;
             Loop;
         Icon:
-            BFLT A 0;
+            AFLT A 0;
             Stop;
     }
 }

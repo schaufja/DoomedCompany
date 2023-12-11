@@ -6,14 +6,14 @@ class Flashlight_Basic : DC_BaseItem
 
         int maxPower = 35 * 60 * 2; //two minutes of battery life
 
-        itemData = new("ItemData");
 		itemData.name = "Basic Flashlight";
         itemData.weight = 0;
         itemData.value = 6;
+        itemData.spriteName = "AFLTA0";
+
         itemData.batteryCharge = maxPower;
         itemData.batteryMax = maxPower; 
         itemData.isActive = false;
-        itemData.spriteName = "AFLT";
         itemData.itemType = ItemTypes.FLASHLIGHT;
         
         itemData.handSprite = "FHLTA";

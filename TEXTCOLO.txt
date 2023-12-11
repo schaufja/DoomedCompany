@@ -1,0 +1,8 @@
+WeightYellow 
+{
+    #FFFFD6 #FFFF00 0 255
+}
+WeightRed
+{
+    #FF5656 #FF0000 0 255
+}
