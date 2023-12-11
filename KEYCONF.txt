@@ -7,6 +7,10 @@ addmenukey "Drop Item" dc_drop
 defaultbind "dc_drop" g
 alias dc_drop "netevent \"dc_drop\""
 
+addmenukey "Toggle Pro Flashlight(s)" dc_toggleflashlight
+defaultbind "dc_toggleflashlight" f
+alias dc_toggleflashlight "netevent \"dc_toggleflashlight\""
+
 addmenukey "Next Item" dc_itemnext
 defaultbind "dc_itemnext" MWheelUp
 alias dc_itemnext "netevent \"dc_itemnext\""

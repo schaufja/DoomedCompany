@@ -17,6 +17,10 @@ class MKeyEventHandler : EventHandler
             CompanyMan player = CompanyMan(players[consoleplayer].mo);
             DropItem(player);         
         }
+        if (e.Name == "dc_toggleflashlight")
+        {
+            ToggleAllProFlashlights();
+        }
         if (e.Name == "dc_itemnext")
         {
             let player = CompanyMan(players[consoleplayer].mo);
@@ -70,5 +74,18 @@ class MKeyEventHandler : EventHandler
         player.RemoveItem(player.selectedItem);
     }
 
-
+    void ToggleAllProFlashlights(void)
+    {
+        CompanyMan player = CompanyMan(players[consoleplayer].mo);
+        player.allFlashlightState = !player.allFlashlightState;
+        
+        for (int i = 0; i < player.inventory.Size(); i++)
+        {
+            if(player.inventory[i].name == "Pro Flashlight")
+            {
+                player.PlayItemSound(player.inventory[i].soundName);
+                player.inventory[i].isActive = player.allFlashlightState;
+            }
+        }
+    }
 }

@@ -358,7 +358,7 @@ class CompanyHUD : DoomStatusBar
 		if (itemName != "")
 		{
 			DrawString(weightFont, ("Drop " .. itemName .. " [" .. dropString .. "]"), (16, 176), flags);
-			if(itemType != ItemTypes.JUNK)
+			if(itemType != ItemTypes.JUNK && itemType != ItemTypes.NOISY)
 			{
 				DrawString(weightFont, ("Use " .. itemName .. " [" .. activateString .. "]"), (16, 192), flags);
 			}
@@ -386,7 +386,7 @@ class CompanyHUD : DoomStatusBar
 		double spriteScale = companyMan.inventory[companyMan.selectedItem].handSpriteScale;
 		if(companyMan.inventory[companyMan.selectedItem].handSprite == "HNDOA")
 		{
-			DrawImage(spriteName, (-160, -130), flags, 1, (-1, -1), (spriteScale, spriteScale));
+			DrawImage(spriteName, (-160, -180), flags, 1, (-1, -1), (spriteScale, spriteScale));
 		}
 		else if(companyMan.inventory[companyMan.selectedItem].handSprite == "TNT1A")
 		{

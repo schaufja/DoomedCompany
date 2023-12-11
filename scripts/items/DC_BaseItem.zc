@@ -18,6 +18,9 @@ class ItemData
     //HUD display
     string handSprite; //5 characters, including frame
     double handSpriteScale;
+
+    //Sound
+    string soundName;
 }
 
 class ItemTypes
@@ -25,6 +28,7 @@ class ItemTypes
     const NONE = 0;
     const JUNK = 1;
     const FLASHLIGHT = 2;
+    const NOISY = 3; //plays sound on select
 }
 
 class DC_BaseItem : Actor
@@ -48,8 +52,11 @@ class DC_BaseItem : Actor
         itemData.batteryMax = -1;
         itemData.isActive = false;
         itemData.itemType = ItemTypes.JUNK;
+
         itemData.handSprite = "TNT1A";
         itemData.handSpriteScale = 12.0;
+
+        itemData.soundName = "";
 	}
 
     //not intended to be overridden by children

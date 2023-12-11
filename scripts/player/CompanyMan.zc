@@ -26,6 +26,9 @@ Class CompanyMan : DoomPlayer
 	string toolTip;
 	int toolTipTimer;
 
+	//misc func stuff
+	bool allFlashlightState;
+
 	Default
 	{
 		Player.ForwardMove 0.5,0.25;
@@ -45,6 +48,7 @@ Class CompanyMan : DoomPlayer
 		activeIndex = -1;
 		toolTip = "";
 		toolTipTimer = 0;
+		allFlashlightState = false;
 
 		SetupInventory();
 	}
@@ -124,9 +128,16 @@ Class CompanyMan : DoomPlayer
 			inventory[emptySlot].handSprite = item.handSprite;
 			inventory[emptySlot].handSpriteScale = item.handSpriteScale;
 
+			inventory[emptySlot].soundName = item.soundName;
+
 			if(inventory[emptySlot].handSprite == "TNT1A")
 			{
 				selectedItem = emptySlot;
+			}
+
+			if(inventory[emptySlot].itemType == ItemTypes.NOISY)
+			{
+				PlayItemSound(inventory[emptySlot].soundName);
 			}
 
 			return true;
@@ -154,6 +165,8 @@ Class CompanyMan : DoomPlayer
 			
 			empty.handSprite = "PUNGA";
 			empty.handSpriteScale = 1.0;
+
+			empty.soundName = "";
 
 			inventory[itemIndex] = empty;
 
@@ -191,6 +204,11 @@ Class CompanyMan : DoomPlayer
 		{
 			selectedItem--;
 		}
+
+		if(inventory[selectedItem].itemType == ItemTypes.NOISY)
+		{
+			PlayItemSound(inventory[selectedItem].soundName);
+		}
 	}
 
 	void PrevItem(void)
@@ -208,13 +226,24 @@ Class CompanyMan : DoomPlayer
 		{
 			selectedItem++;
 		}
+
+		if(inventory[selectedItem].itemType == ItemTypes.NOISY)
+		{
+			PlayItemSound(inventory[selectedItem].soundName);
+		}
 	}
 
 	void ToggleItemActive(void)
 	{
-		if(inventory[selectedItem].itemType != 2)
+		int itemType = inventory[selectedItem].itemType;
+		if(itemType == ItemTypes.JUNK || itemType == ItemTypes.NOISY)
 		{
 			return;
+		}
+
+		if(itemType == ItemTypes.FLASHLIGHT)
+		{
+			PlayItemSound(inventory[selectedItem].soundName);
 		}
 
 		let oldActive = inventory[selectedItem].isActive;
@@ -361,6 +390,14 @@ Class CompanyMan : DoomPlayer
 		else
 		{
 			toolTip = "";
+		}
+	}
+
+	void PlayItemSound(string soundName)
+	{
+		if(soundName != "")
+		{
+			A_StartSound(soundName, CHAN_AUTO, volume: 0.8);
 		}
 	}
 }

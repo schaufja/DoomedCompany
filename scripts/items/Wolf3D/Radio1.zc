@@ -1,0 +1,34 @@
+class Radio1 : DC_BaseItem
+{
+    override void BeginPlay(void)
+	{
+		Super.BeginPlay();
+
+		itemData.name = "Small Radio";
+        itemData.weight = 8;
+        itemData.value = random(18,40);
+        itemData.spriteName = "RADIA0";
+
+        itemData.batteryCharge = -1;
+        itemData.batteryMax = -1; 
+        itemData.isActive = false;
+        itemData.itemType = ItemTypes.NOISY;
+        
+        itemData.handSprite = "HNDOA";
+        itemData.handSpriteScale = 6.0;
+
+        itemData.soundName = "items/radiovoice";
+	}
+
+    States
+    {
+        Spawn:
+            RADI A 0;
+        Stay:
+            #### # 1;
+            Loop;
+        Icon:
+            RADI A 0;
+            Stop;
+    }
+}

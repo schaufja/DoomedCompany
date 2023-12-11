@@ -29,7 +29,6 @@ Titan - Flat Snow Wasteland/Large Industrial Interior - Hard 700
 
 ======== TODO ========
 Build simple item ping
-Setup per-tool overlays in DC_Hands
 Setup space skybox
 Setup space ship cam
 Build dummy moon room for loot generation

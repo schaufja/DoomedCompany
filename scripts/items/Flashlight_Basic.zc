@@ -18,6 +18,8 @@ class Flashlight_Basic : DC_BaseItem
         
         itemData.handSprite = "FHLTA";
         itemData.handSpriteScale = 1.0;
+
+        itemData.soundName = "items/flashlightclick";
 	}
     
     override void Tick(void)
