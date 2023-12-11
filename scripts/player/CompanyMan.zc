@@ -18,8 +18,13 @@ Class CompanyMan : DoomPlayer
 	int currentWeight;
 	double doubleWeight;
 	double weightSpeedFactor;
+	bool handsFull;
 
 	string handSprite;
+
+	//interface
+	string toolTip;
+	int toolTipTimer;
 
 	Default
 	{
@@ -38,6 +43,8 @@ Class CompanyMan : DoomPlayer
 		inventorySlots = 4;
 		selectedItem = 0;
 		activeIndex = -1;
+		toolTip = "";
+		toolTipTimer = 0;
 
 		SetupInventory();
 	}
@@ -67,6 +74,10 @@ Class CompanyMan : DoomPlayer
 		DoRecharge();
 
 		UpdateWeight();
+
+		DoHeavy();
+
+		DoToolTip();
 	}
 
 	void SetupInventory(void)
@@ -88,6 +99,14 @@ Class CompanyMan : DoomPlayer
 
 	bool AddItem(ItemData item)
 	{
+		//If our hands are full, we can't add any items.
+		if(handsFull)
+		{
+			toolTip = "Hands Full";
+			toolTipTImer = 70;
+			return false;
+		}
+
 		let emptySlot = GetEmptyInventorySlot();
 		if(emptySlot != -1)
 		{
@@ -103,6 +122,7 @@ Class CompanyMan : DoomPlayer
 			inventory[emptySlot].itemType = item.itemType;
 
 			inventory[emptySlot].handSprite = item.handSprite;
+			inventory[emptySlot].handSpriteScale = item.handSpriteScale;
 
 			return true;
 		}
@@ -128,6 +148,7 @@ Class CompanyMan : DoomPlayer
 			empty.itemType = ItemTypes.NONE;
 			
 			empty.handSprite = "PUNGA";
+			empty.handSpriteScale = 1.0;
 
 			inventory[itemIndex] = empty;
 
@@ -152,6 +173,11 @@ Class CompanyMan : DoomPlayer
 
 	void NextItem(void)
 	{
+		if(handsFull)
+		{
+			return;
+		}
+
 		if(selectedItem == 0)
 		{
 			selectedItem = inventorySlots - 1;
@@ -164,6 +190,11 @@ Class CompanyMan : DoomPlayer
 
 	void PrevItem(void)
 	{
+		if(handsFull)
+		{
+			return;
+		}
+
 		if(selectedItem == inventorySlots - 1)
 		{
 			selectedItem = 0;
@@ -297,5 +328,34 @@ Class CompanyMan : DoomPlayer
 			return inventory[selectedItem].handSprite;
 		}
 		return "PUNGA";
+	}
+
+	void DoHeavy(void)
+	{
+		if(inventory[selectedItem].handSprite == "TNT1A")
+		{
+			handsFull = true;
+		}
+		else
+		{
+			handsFull = false;
+		}
+	}
+
+	void DoToolTip(void)
+	{
+		if(toolTip == "")
+		{
+			return;
+		}
+
+		if(toolTipTImer > 0)
+		{
+			toolTipTImer--;
+		}
+		else
+		{
+			toolTip = "";
+		}
 	}
 }

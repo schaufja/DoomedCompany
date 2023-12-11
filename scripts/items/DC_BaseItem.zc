@@ -17,6 +17,7 @@ class ItemData
 
     //HUD display
     string handSprite; //5 characters, including frame
+    double handSpriteScale;
 }
 
 class ItemTypes
@@ -45,7 +46,8 @@ class DC_BaseItem : Actor
         itemData.batteryMax = -1;
         itemData.isActive = false;
         itemData.itemType = ItemTypes.JUNK;
-        itemData.handSprite = "HNDOA";
+        itemData.handSprite = "TNT1A";
+        itemData.handSpriteScale = 12.0;
 	}
 
     //not intended to be overridden by children

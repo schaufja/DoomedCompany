@@ -68,7 +68,7 @@ Class DC_Hands : Fist
             let companyMan = CompanyMan(self);
             companyMan.ToggleItemActive();
         }
-		#### # 5 A_ReFire;
+		#### # 1 A_ReFire;
 		Goto Ready;
 	//For display
 	OpenHand:

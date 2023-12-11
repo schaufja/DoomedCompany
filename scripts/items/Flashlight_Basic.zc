@@ -17,6 +17,7 @@ class Flashlight_Basic : DC_BaseItem
         itemData.itemType = ItemTypes.FLASHLIGHT;
         
         itemData.handSprite = "FHLTA";
+        itemData.handSpriteScale = 1.0;
 	}
     
     override void Tick(void)

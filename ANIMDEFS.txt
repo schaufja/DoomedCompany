@@ -1,1 +1,29 @@
 cameratexture CAM2 640 426 fit 96 64
+
+texture FRAMA0
+    random
+    pic FRAMA0 rand 20 60
+    pic FRAMB0 rand 20 60
+    pic FRAMC0 rand 20 60
+    pic FRAMD0 rand 20 60
+
+texture FRAMB0
+    random
+    pic FRAMB0 rand 20 60
+    pic FRAMC0 rand 20 60
+    pic FRAMD0 rand 20 60
+    pic FRAMA0 rand 20 60
+
+texture FRAMC0
+    random
+    pic FRAMC0 rand 20 60
+    pic FRAMD0 rand 20 60
+    pic FRAMA0 rand 20 60
+    pic FRAMB0 rand 20 60
+
+texture FRAMD0
+    random
+    pic FRAMD0 rand 20 60
+    pic FRAMA0 rand 20 60
+    pic FRAMB0 rand 20 60
+    pic FRAMC0 rand 20 60
