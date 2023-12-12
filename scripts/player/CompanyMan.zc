@@ -32,6 +32,9 @@ Class CompanyMan : DoomPlayer
 
 	//misc func stuff
 	bool allFlashlightState;
+	int lightScale;
+	int deathBeamChargeLevel;
+	const DEATHBEAM_MAX_CHARGE = 70.0;
 
 	Default
 	{
@@ -54,6 +57,8 @@ Class CompanyMan : DoomPlayer
 		toolTipTimer = 0;
 		itemCycleDelay = 0;
 		allFlashlightState = false;
+		lightScale = 1.0;
+		deathBeamChargeLevel = 0;
 
 		SetupInventory();
 	}
@@ -66,7 +71,8 @@ Class CompanyMan : DoomPlayer
 
 		if((activeIndex != -1) && (inventory[activeIndex].itemType == ItemTypes.FLASHLIGHT))
 		{
-			A_AttachLight("PlayerFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 41), 2.0, 8, 32, pitch);
+			
+			A_AttachLight("PlayerFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320 * lightScale, 64 * lightScale, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 41), 2.0, 8, 32, pitch);
 			//if all four items are active flashlights, create a death beam to harm bracken
 		}
 		else
@@ -358,13 +364,84 @@ Class CompanyMan : DoomPlayer
 
 	void DoBatteryDrain(void)
 	{
+		int numProFlashlight = 0;
+		
+
 		for(int i = 0; i < inventory.Size(); i++)
 		{
 			if(inventory[i].batteryCharge > 0 && inventory[i].isActive)
 			{
 				inventory[i].batteryCharge--;
 			}
+
+			if(inventory[i].name == "Pro Flashlight" && inventory[i].isActive && inventory[i].batteryCharge > 0)
+			{
+				numProFlashlight++;
+			}
 		}
+
+		if(numProFlashlight == inventory.Size())
+		{
+			deathBeamChargeLevel++;
+
+			double soundFactor = (deathBeamChargeLevel / DEATHBEAM_MAX_CHARGE) * 2.0;
+			double quakeFactor = soundFactor * 2.0;
+
+			if(deathBeamChargeLevel % 35 == 0)
+			{
+				//console.printf("%f / %f = %f", deathBeamChargeLevel, DEATHBEAM_MAX_CHARGE, soundFactor);
+				A_StartSound("items/flashlightcharge", CHAN_WEAPON, volume: soundFactor);
+				A_QuakeEx( quakeFactor, quakeFactor, quakeFactor, 60, 0, quakeFactor * 25.0, sfx: "" );
+			}
+			if(deathBeamChargeLevel >= DEATHBEAM_MAX_CHARGE)
+			{
+				FireDeathBeam();
+			}
+		}
+		else
+		{
+			deathBeamChargeLevel = 0;
+		}
+	}
+
+	void FireDeathBeam(void)
+	{
+		A_StartSound("items/deathbeam", CHAN_WEAPON, volume: 2.0);
+		deathBeamChargeLevel = 0;
+
+		double heightOffset = ViewHeight - 12;
+		double cp = cos(pitch);
+		double distanceOffset = 32;
+		double missileSpeed = 10;
+
+		for(int i = 0; i < inventory.Size(); i++)
+		{
+			inventory[i].batteryCharge = 0;
+
+			Actor missile = Actor.Spawn("FlashlightShot", pos + (cp * distanceOffset * cos(angle), cp * distanceOffset * sin(angle), distanceOffset * sin(pitch) + heightOffset), ALLOW_REPLACE);
+			missile.angle = angle;
+			missile.pitch = pitch;
+			missile.vel = (
+				cp * missileSpeed * cos(missile.angle),
+				cp * missileSpeed * sin(missile.angle),
+				1.5 * missileSpeed * -sin(pitch)
+			);
+		}
+
+		missileSpeed = 5;
+
+		RemoveItem(selectedItem);
+
+		Actor missile = Actor.Spawn("FlashlightHusk", pos + (cp * distanceOffset * cos(angle), cp * distanceOffset * sin(angle), distanceOffset * sin(pitch) + heightOffset), ALLOW_REPLACE);
+		missile.angle = angle;
+		missile.pitch = pitch;
+		missile.vel = (
+			cp * missileSpeed * cos(missile.angle),
+			cp * missileSpeed * sin(missile.angle),
+			1.5 * missileSpeed * -sin(pitch)
+		);
+
+		A_DamageSelf(random(0,35));
 	}
 
 	void DoRecharge(void)
@@ -407,19 +484,21 @@ Class CompanyMan : DoomPlayer
 		if(inventory[selectedItem].handSprite == "TNT1A")
 		{
 			handsFull = true;
+			GiveInventory("DC_HandsfullToken", 1);
 		}
 		else
 		{
 			handsFull = false;
+			TakeInventory("DC_HandsfullToken", 1);
 		}
 	}
 
 	void DoToolTip(void)
 	{
-		if(CountInv("DC_HandsfullToken") > 0)
+		if(CountInv("DC_HandsfullTooltipToken") > 0)
 		{
 			Tooltip_HandsFull();
-			TakeInventory("DC_HandsfullToken", 1);
+			TakeInventory("DC_HandsfullTooltipToken", 1);
 		}
 		if(toolTip == "")
 		{

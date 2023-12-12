@@ -1,2 +1,4 @@
 items/radiovoice RADIVOIC
 items/flashlightclick FHLTCLCK
+items/flashlightcharge DSFIRXPL
+items/deathbeam DSSGLHIT
