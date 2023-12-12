@@ -10,6 +10,8 @@ Class CompanyMan : DoomPlayer
 	const STAMINA_DRAIN_RATE = 2; //how many ticks before draining a stamina point while sprinting
 	bool batteryDrain;
 
+	const JUMP_DELAY = 10;
+
 	//inventory
 	array <ItemData> inventory;
 	int inventorySlots;
@@ -87,6 +89,35 @@ Class CompanyMan : DoomPlayer
 		DoToolTip();
 
 		itemCycleDelay--;
+	}
+
+	override void CheckJump()
+	{
+		let player = self.player;
+		if(CountInv("DC_StaminaToken") > 0 && player.cmd.buttons & BT_JUMP && player.onground && player.jumpTics == 0)
+		{
+			//Call Super.CheckJump to execute a regular jump
+			Super.CheckJump();
+			if(weightSpeedFactor < 0.4)
+			{
+				TakeInventory("DC_StaminaToken", 20);
+			}
+			else
+			{
+				TakeInventory("DC_StaminaToken", 15);
+			}
+
+			if(CountInv("DC_StaminaToken") == 0)
+			{
+				regenDelayCounter = STAMINA_DELAY;
+			}
+			else
+			{
+				regenDelayCounter = 18;
+			}
+		}
+		
+		
 	}
 
 	void SetupInventory(void)
@@ -282,7 +313,7 @@ Class CompanyMan : DoomPlayer
 		{
 			if (staminaDrainCounter >= STAMINA_DRAIN_RATE)
 			{
-				if(weightSpeedFactor < 0.4 && CountInv("DC_StaminaToken") > 1)
+				if(weightSpeedFactor < 0.4)
 				{
 					TakeInventory("DC_StaminaToken", 2);
 				}
@@ -298,7 +329,6 @@ Class CompanyMan : DoomPlayer
 				Speed = 2.0 * weightSpeedFactor;
 			}
 			staminaDrainCounter++;
-			regenDelayCounter = 5;
 		}
 		else if((GetPlayerInput(INPUT_BUTTONS) & BT_SPEED) && CountInv("DC_StaminaToken") == 0)
 		{

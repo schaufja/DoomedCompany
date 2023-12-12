@@ -57,7 +57,7 @@ class MKeyEventHandler : EventHandler
             item.vel = (
                 cp * itemSpeed * cos(item.angle),
                 cp * itemspeed * sin(item.angle),
-                itemspeed * sin(-player.pitch)
+                1.5 * itemSpeed * -sin(player.pitch)
             ) + player.vel;
         }
 

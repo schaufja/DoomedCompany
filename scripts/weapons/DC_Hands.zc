@@ -2,11 +2,6 @@ Class DC_Hands : Fist
 {
 	string itemSpriteName;
 
-	override void BeginPlay(void)
-	{
-		
-	}
-
 	action void A_SetGraphic()
 	{
 		
@@ -63,12 +58,11 @@ Class DC_Hands : Fist
 		#### # 1 A_Raise; 
 		Loop;
 	Fire:
-		#### # 4 
+		#### # 4
         {
             let companyMan = CompanyMan(self);
             companyMan.ToggleItemActive();
         }
-		#### # 1;
 		Goto Ready;
 	//For display
 	OpenHand:
