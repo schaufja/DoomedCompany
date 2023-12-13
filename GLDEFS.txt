@@ -1,0 +1,9 @@
+Skybox SPACE1 fliptop
+{
+    spaceft
+    spacert
+    spacebk
+    spacelf
+    spaceup
+    spacedn
+}

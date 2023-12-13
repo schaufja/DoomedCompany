@@ -55,13 +55,13 @@ class CompanyHUD : DoomStatusBar
 
 		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;	
 
-		int healthX = 80;
-		int healthY = 80;
-		int staminaX = 28;
-		int staminaY = 58;
+		int healthX = 80 * uiScale;
+		int healthY = 80 * uiScale;
+		int staminaX = 28 * uiScale;
+		int staminaY = 58 * uiScale;
 
-		DrawImage("sprites/ui/health_outline.png", (healthX, healthY), flags, 1, (-1, -1), (uiScale, uiScale));
-		DrawImage("sprites/ui/health_critical.png", (healthX, healthY), flags, (1 - (CPlayer.health / 100.0)), (-1, -1), (uiScale, uiScale));
+		DrawImage("sprites/ui/health_outline.png", (healthX, healthY), flags, 1, (-1, -1), scale: (uiScale, uiScale));
+		DrawImage("sprites/ui/health_critical.png", (healthX, healthY), flags, (1 - (CPlayer.health / 100.0)), (-1, -1), scale: (uiScale, uiScale));
 		
 		switch(CPlayer.mo.CountInv("DC_StaminaToken"))
 		{
@@ -233,15 +233,15 @@ class CompanyHUD : DoomStatusBar
 
 		if(currentWeight > 100)
 		{
-			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_BRICK);
+			DrawString(weightFont, (currentWeight .. " lb"), (160 * uiScale, 152 * uiScale), flags, Font.CR_BRICK, scale: (uiScale, uiScale));
 		}
 		else if(currentWeight > 50)
 		{
-			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags, Font.CR_GOLD);
+			DrawString(weightFont, (currentWeight .. " lb"), (160 * uiScale, 152 * uiScale), flags, Font.CR_GOLD, scale: (uiScale, uiScale));
 		}
 		else
 		{
-			DrawString(weightFont, (currentWeight .. " lb"), (160, 152), flags);
+			DrawString(weightFont, (currentWeight .. " lb"), (160 * uiScale, 152 * uiScale), flags, scale: (uiScale, uiScale));
 		}
 	}
 
@@ -249,10 +249,10 @@ class CompanyHUD : DoomStatusBar
 	{
 		flags = DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
 
-		int batteryIconX = 36;
-		int batteryIconY = 18;
-		int batteryBarX = 40;
-		int batteryBarY = 48;
+		int batteryIconX = 36 * uiScale;
+		int batteryIconY = 18 * uiScale;
+		int batteryBarX = 40 * uiScale;
+		int batteryBarY = 48 * uiScale;
 
 		int activeIndex = companyMan.activeIndex;
 		double batteryCharge;
@@ -266,7 +266,7 @@ class CompanyHUD : DoomStatusBar
 			batteryMax = 100.0;
 			isActive = companyMan.inventory[companyMan.selectedItem].isActive;
 
-			DrawImage("sprites/ui/battery_icon.png", (batteryIconX, batteryIconY), flags, iconAlpha, (-1, -1), (uiScale, uiScale));
+			DrawImage("sprites/ui/battery_icon.png", (batteryIconX, batteryIconY), flags, iconAlpha, (-1, -1), scale: (uiScale, uiScale));
 		
 			DrawBar("sprites/ui/battery_bar.png", "sprites/ui/battery_bar_frame.png", (double(batteryCharge / batteryMax) * 100), 100, (batteryBarX, batteryBarY), 0, 0, flags);
 		}
@@ -277,7 +277,7 @@ class CompanyHUD : DoomStatusBar
 			batteryMax = 100.0;
 			isActive = companyMan.inventory[activeIndex].isActive;
 
-			DrawImage("sprites/ui/battery_icon.png", (batteryIconX, batteryIconY), flags, iconAlpha, (-1, -1), (uiScale, uiScale));
+			DrawImage("sprites/ui/battery_icon.png", (batteryIconX, batteryIconY), flags, iconAlpha, (-1, -1), scale: (uiScale, uiScale));
 		
 			DrawBar("sprites/ui/battery_bar.png", "sprites/ui/battery_bar_frame.png", (double(batteryCharge / batteryMax) * 100), 100, (batteryBarX, batteryBarY), 0, 0, flags);
 		}
@@ -313,8 +313,8 @@ class CompanyHUD : DoomStatusBar
 
 	void DrawInventorySlots(void)
 	{
-		int xOffset = -96; // for four total slots
-		int yOffset = -56;
+		int xOffset = -96 * uiScale; // for four total slots
+		int yOffset = -56 * uiScale;
 
 		int selectedItem = companyMan.selectedItem;
 
@@ -323,14 +323,14 @@ class CompanyHUD : DoomStatusBar
 			bool selected = (selectedItem == i);
 			String spriteName = companyMan.inventory[i].spriteName;
 			DrawSlot(xOffset, yOffset, selected, spriteName, i);
-			xOffset += 64;
+			xOffset += 64 * uiScale;
 		}
 	}
 
 	void DrawSlot(int xPos, int yPos, bool isSelected, String spriteName, int startFrame)
 	{
 		flags = DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER;
-		double selectedScale = 1.33;
+		double selectedScale = 1.33 * uiScale;
 		double myScale = isSelected ? selectedScale : uiScale;
 
 		string frames = "ABCD";
@@ -357,10 +357,10 @@ class CompanyHUD : DoomStatusBar
 
 		if (itemName != "")
 		{
-			DrawString(weightFont, ("Drop " .. itemName .. " [" .. dropString .. "]"), (16, 176), flags);
+			DrawString(weightFont, ("Drop " .. itemName .. " [" .. dropString .. "]"), (16 * uiScale, 176 * uiScale), flags, scale: (uiScale, uiScale));
 			if(itemType != ItemTypes.JUNK && itemType != ItemTypes.NOISY)
 			{
-				DrawString(weightFont, ("Use " .. itemName .. " [" .. activateString .. "]"), (16, 192), flags);
+				DrawString(weightFont, ("Use " .. itemName .. " [" .. activateString .. "]"), (16 * uiScale, 192 * uiScale), flags, scale: (uiScale, uiScale));
 			}
 		}
 	}
@@ -376,22 +376,23 @@ class CompanyHUD : DoomStatusBar
 			return;
 		}
 
-		DrawString(itemFont, ("Value: " .. itemValue), (24, -24), flags, Font.CR_UNTRANSLATED, 1, -1, 4, (0.9,0.9));
+		DrawString(itemFont, ("Value: " .. itemValue), (24, -24), flags, Font.CR_UNTRANSLATED, 1, -1, 4, (1,1));
 	}
 
 	void DrawItemInHand(void)
 	{
-		flags = DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_BOTTOM;
+		flags = DI_SCREEN_CENTER_BOTTOM|DI_ITEM_BOTTOM;
 		string spriteName = companyMan.inventory[companyMan.selectedItem].spriteName;
-		double spriteScale = companyMan.inventory[companyMan.selectedItem].handSpriteScale;
+		double spriteScale = companyMan.inventory[companyMan.selectedItem].handSpriteScale * uiScale;
+
 		if(companyMan.inventory[companyMan.selectedItem].handSprite == "HNDOA")
 		{
-			DrawImage(spriteName, (-160, -110), flags, 1, (-1, -1), (spriteScale, spriteScale));
+			DrawImage("HNDOA0", (240, 0), flags, 1, (-1, -1), (spriteScale / 2.5, spriteScale / 2.5));
+			DrawImage(spriteName, (160, -110), flags, 1, (-1, -1), (spriteScale * 1.2, spriteScale * 1.4));
 		}
 		else if(companyMan.inventory[companyMan.selectedItem].handSprite == "TNT1A")
 		{
-			flags = DI_SCREEN_CENTER_BOTTOM|DI_ITEM_BOTTOM;
-			DrawImage(spriteName, (0, 160), flags, 1, (-1, -1), (spriteScale, spriteScale));
+			DrawImage(spriteName, (0, 240), flags, 1, (-1, -1), (spriteScale * 1.2, spriteScale * 1.2));
 		}
 	}
 
@@ -401,7 +402,7 @@ class CompanyHUD : DoomStatusBar
 		string toolTip = companyMan.toolTip;
 		if(toolTip != "")
 		{
-			DrawString(weightFont, (toolTip), (0, -196), flags);
+			DrawString(weightFont, (toolTip), (0, -196), flags, scale: (uiScale, uiScale));
 		}
 	}
 

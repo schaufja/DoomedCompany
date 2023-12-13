@@ -34,7 +34,7 @@ Class CompanyMan : DoomPlayer
 	bool allFlashlightState;
 	int lightScale;
 	int deathBeamChargeLevel;
-	const DEATHBEAM_MAX_CHARGE = 70.0;
+	const DEATHBEAM_MAX_CHARGE = 140.0;
 
 	Default
 	{
@@ -100,11 +100,16 @@ Class CompanyMan : DoomPlayer
 	override void CheckJump()
 	{
 		let player = self.player;
+		//if we're pressing jump, and we were on the ground, and we have no jumpTics, we're at the start of a fresh jump
 		if(CountInv("DC_StaminaToken") > 0 && player.cmd.buttons & BT_JUMP && player.onground && player.jumpTics == 0)
 		{
 			//Call Super.CheckJump to execute a regular jump
 			Super.CheckJump();
-			if(weightSpeedFactor < 0.4)
+			if(weightSpeedFactor < 0.2)
+			{
+				TakeInventory("DC_StaminaToken", 30);
+			}
+			else if(weightSpeedFactor < 0.4)
 			{
 				TakeInventory("DC_StaminaToken", 20);
 			}
@@ -495,6 +500,27 @@ Class CompanyMan : DoomPlayer
 
 	void DoToolTip(void)
 	{
+		// Create the tracer
+		let tracer = new("MyLineTracer");
+		if (!tracer)
+			return;
+
+		// Get the current direction the player is looking
+		Vector3 dir = (AngleToVector(angle, cos(pitch)), -sin(pitch));
+
+		// Set the starting point to the player's position + 3/4 their height
+		Vector3 start = pos + (0,0,height*3/4);
+
+		tracer.Source = self;
+
+		tracer.Trace(start, CurSector, dir, self.UseRange, 0);
+		if(tracer.FoundItem)
+		{
+			DC_BaseItem item = tracer.FoundItem;
+			Tooltip_Pickup(item.itemData.name);
+		}
+
+
 		if(CountInv("DC_HandsfullTooltipToken") > 0)
 		{
 			Tooltip_HandsFull();
@@ -505,9 +531,9 @@ Class CompanyMan : DoomPlayer
 			return;
 		}
 
-		if(toolTipTImer > 0)
+		if(toolTipTimer > 0)
 		{
-			toolTipTImer--;
+			toolTipTimer--;
 		}
 		else
 		{
@@ -527,6 +553,45 @@ Class CompanyMan : DoomPlayer
 	void Tooltip_HandsFull(void)
 	{
 		toolTip = "Hands Full";
-		toolTipTImer = 70;
+		toolTipTimer = 70;
+	}
+
+	void Tooltip_Pickup(string itemName)
+	{
+		int key1;
+        int key2;
+
+		[key1, key2] = Bindings.getKeysForCommand("+use");
+		String useKey = KeyBindings.NameKeys(key1, 0);
+
+		toolTip = "Pick Up " .. itemName .. " [" .. useKey .. "]";
+		toolTipTimer = 1;
+	}
+	
+}
+
+class MyLineTracer : LineTracer
+{
+	Actor Source;
+	DC_BaseItem FoundItem;
+
+	override ETraceStatus TraceCallback()
+	{
+		if (Results.HitType == TRACE_HitActor)
+		{
+			// Ignore source
+			if (Results.HitActor == Source)
+			{
+				return TRACE_Skip;
+			}
+
+			if (Results.HitActor is "DC_BaseItem")
+			{
+				FoundItem = DC_BaseItem(Results.HitActor);
+				return TRACE_Stop;
+			}
+			return TRACE_Skip;
+		}
+		return TRACE_Stop;
 	}
 }

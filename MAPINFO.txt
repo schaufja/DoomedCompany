@@ -15,3 +15,8 @@ DoomEdNums
 	21001 = "ConsoleManager"
 	21002 = "ConsoleLine"
 }
+
+map MAP01 "The Verse"
+{
+	Sky1 = "SPACE1", 0
+}

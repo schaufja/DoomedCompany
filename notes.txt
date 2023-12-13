@@ -28,15 +28,14 @@ Titan - Flat Snow Wasteland/Large Industrial Interior - Hard 700
 
 
 ======== TODO ========
+Move item in hand render to DC_Hands so they pick up environment light
 Build simple item ping
-Setup space skybox
 Setup space ship cam
-Build dummy moon room for loot generation
+LinePortal dungeon generation prototype
 
 ======== Future Features ========
 Item ping with tooltip
 Ship and Entrance ping through walls with hud overlay
-LinePortal dungeon generation prototype
 
 ======== Moons ========
 Insight

@@ -17,7 +17,7 @@ Class DC_Hands : Fist
 		else
 		{
 			
-			psp.Sprite = GetSpriteIndex("HNDO");
+			psp.Sprite = GetSpriteIndex("TNTA");
 			psp.Frame = 0;
 		}
 	}

@@ -47,6 +47,7 @@ class DC_BaseItem : Actor
         itemData.weight = 71;
         itemData.value = random(0,999);
         itemData.spriteName = "CELPA0";
+        itemData.className = self.GetClassName();
         
         itemData.batteryCharge = -1;
         itemData.batteryMax = -1;
@@ -62,7 +63,7 @@ class DC_BaseItem : Actor
     //not intended to be overridden by children
     override void PostBeginPlay(void)
     {
-        itemData.className = self.GetClassName();
+        
     }
 
     override bool Used (Actor user)
