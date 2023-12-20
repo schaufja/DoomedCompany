@@ -28,11 +28,11 @@ class Flashlight_Basic : DC_BaseItem
         if(itemData.isActive && itemData.batteryCharge > 0)
         {
             itemData.batteryCharge--;
-            A_AttachLight("AltFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 0), 2.0, 8, 32, pitch);
+            A_AttachLight("PlayerFlashlight", DynamicLight.PointLight, color(255, 255, 242, 203), 320, 64, DYNAMICLIGHT.LF_DONTLIGHTSELF | DYNAMICLIGHT.LF_ATTENUATE | DYNAMICLIGHT.LF_SPOT, (0, 0, 0), 2.0, 8, 32, pitch);
         }
         else
         {
-            A_RemoveLight("AltFlashlight");
+            A_RemoveLight("PlayerFlashlight");
         }
     }
 

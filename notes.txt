@@ -31,12 +31,12 @@ Titan - Flat Snow Wasteland/Large Industrial Interior - Hard 700
 Move item in hand render to DC_Hands so they pick up environment light
 Build simple item ping
 Setup space ship cam
-LinePortal dungeon generation prototype
 
 ======== Future Features ========
 Item ping with tooltip
 Ship and Entrance ping through walls with hud overlay
-
+Item spawn entity which wanders
+Fix Flashlights through LinePortals either with line trace or projectile.
 ======== Moons ========
 Insight
 Arboretum

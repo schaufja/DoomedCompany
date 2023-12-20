@@ -12,11 +12,17 @@ gameinfo
 DoomEdNums
 {
 	21000 = "GameStateHandler"
-	21001 = "ConsoleManager"
-	21002 = "ConsoleLine"
+	21001 = "RoomManager"
+	21002 = "DungeonManager"
 }
 
 map MAP01 "The Verse"
 {
 	Sky1 = "SPACE1", 0
+}
+
+map MAP02 "Dungeon Test"
+{
+	Sky1 = "SPACE1", 0
+	UsePlayerStartZ
 }

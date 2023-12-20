@@ -1,5 +1,3 @@
-#include "scripts/items/DC_BaseItem.zc"
-
 class MKeyEventHandler : EventHandler
 {
     override void NetworkProcess(ConsoleEvent e)

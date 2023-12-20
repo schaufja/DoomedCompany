@@ -1,0 +1,72 @@
+const ENTRANCE_ROOM_ID = 10000;
+
+Class DungeonManager : Actor
+{
+    array <RoomManager> rooms;
+    RoomManager entrance;
+
+    override void Tick(void)
+    {
+        if (level.time > 3 && rooms.Size() == 0)
+        {
+            SetEntranceManager();
+            let iterator = ThinkerIterator.Create("RoomManager");
+            RoomManager rm;
+            //Get RoomManagers
+            while(rm = RoomManager(iterator.Next())) 
+            {
+                if(rm != entrance)
+                {
+                    rooms.Push(rm);
+                }
+            }
+            if(CVar.GetCVar("DC_DEBUGMODE"))
+            {
+                console.printf("Fount %d RoomManagers", rooms.Size());
+            }
+            
+            entrance.Setup();
+
+            for(int i = 0; i < rooms.Size(); i++)
+            {
+                rooms[i].Setup();
+            }
+
+            if(CVar.GetCVar("DC_DEBUGMODE") && entrance && entrance.readyForGen)
+            {
+                console.printf("Found entrance");
+            }
+            
+            GenerateDungeon();
+        }
+    }
+
+    void SetEntranceManager(void)
+    {
+        ActorIterator it = Level.CreateActorIterator(ENTRANCE_ROOM_ID, "RoomManager");
+        RoomManager rm;
+        while(rm = RoomManager(it.Next()))
+        {
+            entrance = rm;
+        }
+    }
+
+    RoomManager GetRandomRoomManager()
+    {
+        return rooms[random(0, rooms.Size() - 1)];
+    }
+
+    void GenerateDungeon(void)
+    {
+        if(rooms.Size() > 0 && entrance.readyForGen)
+        {
+            //Generate entrance connections
+            for (int i = 0; i < random(1, entrance.doors.Size()); i++)
+            {
+                RoomManager randomRoomManager = GetRandomRoomManager();
+                entrance.MakeNewConnection(randomRoomManager);
+            }
+            
+        }
+    }
+}

@@ -2,6 +2,8 @@ version "4.5.0"
 
 #include "KeyEventHandler.zsc"
 
+//Utilities
+
 //Hud and display
 #include "scripts/ui/CompanyHud.zc"
 #include "scripts/console/ConsoleLetter.zc"
@@ -10,6 +12,11 @@ version "4.5.0"
 
 //Game state
 #include "scripts/game/GameStateHandler.zc"
+
+//Dungeon gen stuff
+#include "scripts/dungeon/RoomManager.zc"
+#include "scripts/dungeon/DungeonManager.zc"
+
 
 //Items
 #include "scripts/items/DC_BaseItem.zc"

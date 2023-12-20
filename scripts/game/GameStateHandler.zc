@@ -22,7 +22,7 @@ Class GameStateHandler : Actor
     const LEFTDISPLAY_MANAGERPOSY = -99;
     const LEFTDISPLAY_MANAGERPOSZ = 45;
     const LEFTDISPLAY_MANAGERANGLE = 225;
-    const LEFTDISPLAY_COLORTINT = "None";
+    const LEFTDISPLAY_COLORTINT = "None"; //ConsoleGreen
 
     //Center display values
     string orbitMoon;
@@ -46,7 +46,7 @@ Class GameStateHandler : Actor
 
 
     //for testing
-    const CYCLETICKS = 70;
+    const CYCLETICKS = 1;
 
     override void BeginPlay(void)
     {
@@ -72,9 +72,8 @@ Class GameStateHandler : Actor
     }
 
     override void Tick(void)
-    {
-        
-        if(level.time % cycleTicks == 0)
+    {   
+        if(level.time % CYCLETICKS == 0)
         {
             //quota = random(100,99999);
             //profit = random(0,quota-1);

@@ -1,0 +1,181 @@
+Class RoomDoor
+{
+    Line doorLine;
+    bool isInUse;
+    int doorID;
+}
+
+Class RoomManager : Actor
+{
+    string user_DoorIDs; //Editor defined
+    array <int> doorIDs;
+    array <RoomManager> siblingRooms;
+    array <RoomDoor> doors;
+    bool readyForGen;
+
+    override void PostBeginPlay(void)
+    {
+
+    }
+
+    override void Tick(void)
+    {
+        
+    }
+
+    bool Setup (void)
+    {
+        if(user_DoorIDs != "")
+        {
+            SplitUserString(user_DoorIDs);
+            user_DoorIDs = "";
+            for(int i = 0; i < doorIDs.Size(); i++)
+            {
+                AddDoor(doorIDs[i]);
+            }
+
+            readyForGen = true;
+            return true;
+        }
+        return false;
+    }
+
+    //Make a connection to a new or existing RoomManager
+    //Add RoomManager to siblings
+    bool MakeNewConnection(RoomManager otherRoomManager)
+    {
+        //Get door to connect to
+        console.printf("=====Other Room=====");
+        int otherDoorIndex = otherRoomManager.GetRandomUnusedDoorIndex();
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            console.printf("Selected other door index %d", otherDoorIndex);
+        }
+        if (otherDoorIndex == -1)
+        {
+            return false;
+        }
+        
+        //Get door to connect from
+        console.printf("=====This Room=====");
+        int myDoorIndex = GetRandomUnusedDoorIndex();
+        RoomDoor myDoor = doors[myDoorIndex];
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            console.printf("Selected my door index %d", myDoorIndex);
+        }
+
+        //Add to siblings
+        if(siblingRooms.Find(otherRoomManager) != siblingRooms.Size())
+        {
+            siblingRooms.Push(otherRoomManager);
+        }
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            console.printf("Self siblings count: %d", siblingRooms.Size());
+        }
+        
+        //Add self to other siblings
+        if(otherRoomManager.siblingRooms.Find(self) != siblingRooms.Size())
+        {
+            otherRoomManager.siblingRooms.Push(self);
+        }
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            console.printf("Other siblings count: %d", otherRoomManager.siblingRooms.Size());
+        }
+        RoomDoor otherDoor = otherRoomManager.doors[otherDoorIndex];
+        
+        //Create the LinePortal
+        console.printf("ids: %d, %d", myDoor.doorID, otherDoor.doorID);
+        
+        ACS_NamedExecuteAlways("SetupLinePortal", 0, myDoor.doorID, otherDoor.doorID);
+        OpenDoor(myDoor);
+        OpenDoor(otherDoor);
+        myDoor.isInUse = true;
+        otherDoor.isInUse = true;
+        return true;
+    }
+
+
+    void SplitUserString(string inDoorIDs)
+    {
+        array <string> splitIDs;
+        inDoorIDs.Split(splitIDs, ",");
+        for (int i = 0; i < splitIDs.Size(); i++)
+        {
+            doorIDs.Push(splitIDs[i].ToInt());
+        }
+    }
+
+    //Add new linedef as RoomDoor to doors array
+    void AddDoor(int inID)
+    {
+        LineIdIterator iterator = Level.CreateLineIdIterator(inID);
+        array <int> output;
+		int currentIndex = 0;
+		while(true) {
+			currentIndex = iterator.Next();
+			if(currentIndex == -1) break;
+			output.Push(currentIndex);
+		}
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            console.printf("line #%d", output[0]);
+        }
+        //create RoomDoor and assign linedef reference by ID
+        RoomDoor newDoor = new("RoomDoor");
+        newDoor.doorLine = Level.Lines[output[0]];
+        //Set to blocked by default
+        newDoor.doorLine.sidedef[Line.front].SetTexture(Side.mid, TexMan.CheckForTexture("BRICK1", TexMan.Type_Any, TexMan.TryAny));
+        newDoor.doorLine.flags += (Line.ML_BLOCKING);
+        newDoor.isInUse = false;
+        newDoor.doorID = inID;
+        doors.Push(newDoor);
+    }
+
+    void OpenDoor(RoomDoor inDoor)
+    {
+        inDoor.doorLine.sidedef[Line.front].SetTexture(Side.mid, TexMan.CheckForTexture("", TexMan.Type_Any, TexMan.TryAny));
+        inDoor.doorLine.flags -= (Line.ML_BLOCKING);
+    }
+
+    int GetFirstUnusedDoorIndex(void)
+    {
+        for (int i = 0; i < doors.Size(); i++)
+        {
+            if(doors[i].isInUse == false)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int GetRandomUnusedDoorIndex(void)
+    {
+        array <int> doorIndexes;
+        for (int i = 0; i < doors.Size(); i++)
+        {
+            console.printf("doors[%d].isInUse: %d", i, doors[i].isInUse);
+            if(!doors[i].isInUse)
+            {
+                doorIndexes.Push(i);
+            }
+        }
+
+        if(doorIndexes.Size() > 1)
+        {
+            int doorIndex = doorIndexes[random(0, doorIndexes.Size() - 1)];
+            return  doorIndex;
+        }
+        else if(doorIndexes.Size() == 1)
+        {
+            return doorIndexes[0];
+        }
+        else
+        {
+            return -1;
+        }
+    }
+}
