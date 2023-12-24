@@ -1,0 +1,17 @@
+class DC_BaseMonster : Demon
+{
+    Actor tempTarget;
+
+    override void Tick(void)
+    {
+
+    }
+    Default
+    {
+
+    }
+    States
+    {
+
+    }
+}

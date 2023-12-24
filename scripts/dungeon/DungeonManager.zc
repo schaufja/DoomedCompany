@@ -25,11 +25,11 @@ Class DungeonManager : Actor
                 console.printf("Fount %d RoomManagers", rooms.Size());
             }
             
-            entrance.Setup();
+            entrance.Setup(0);
 
             for(int i = 0; i < rooms.Size(); i++)
             {
-                rooms[i].Setup();
+                rooms[i].Setup(i+1);
             }
 
             if(CVar.GetCVar("DC_DEBUGMODE") && entrance && entrance.readyForGen)

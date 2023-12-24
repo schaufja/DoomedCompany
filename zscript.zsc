@@ -3,6 +3,7 @@ version "4.5.0"
 #include "KeyEventHandler.zsc"
 
 //Utilities
+#include "scripts/utils/Geometry.zc"
 
 //Hud and display
 #include "scripts/ui/CompanyHud.zc"

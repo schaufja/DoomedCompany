@@ -1,17 +1,33 @@
+const MEMORYLIFE = 35;
+
 Class RoomDoor
 {
     Line doorLine;
+    DoorHelper doorHelper;
     bool isInUse;
     int doorID;
 }
 
+Class SightMemory
+{
+    Actor seenActor;
+    int mapTimeSeen;
+}
+
 Class RoomManager : Actor
 {
+    int roomID;
     string user_DoorIDs; //Editor defined
     array <int> doorIDs;
     array <RoomManager> siblingRooms;
     array <RoomDoor> doors;
     bool readyForGen;
+    array <SightMemory> seenActors;
+
+    Default
+    {
+        
+    }
 
     override void PostBeginPlay(void)
     {
@@ -20,10 +36,62 @@ Class RoomManager : Actor
 
     override void Tick(void)
     {
-        
+        A_LookEx(32, 0, fov: 360);
+        if(target is "Actor")
+        {
+            SightMemory newSight = new("SightMemory");
+            newSight.seenActor = target;
+            newSight.mapTimeSeen = level.time;
+
+            int memoryIndex = GetMemoryIndex(target);
+            
+            if(memoryIndex != -1)
+            {
+                seenActors[memoryIndex].mapTimeSeen = level.time;
+            }
+            else
+            {
+                seenActors.Push(newSight);
+            }
+            target = null;
+        }
+
+        ClearOldMemories();
+
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            if(seenActors.Size() > 0 && level.time % 70 == 0)
+            {
+                console.printf("I am RoomManager %d and I remember seeing %d entities", roomID, seenActors.Size());
+            }
+        }
     }
 
-    bool Setup (void)
+    int GetMemoryIndex(Actor actor)
+    {
+        for(int i = 0; i < seenActors.Size(); i++)
+        {
+            if(seenActors[i].seenActor is "Actor")
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void ClearOldMemories(void)
+    {
+        for(int i = 0; i < seenActors.Size(); i++)
+        {
+            if(level.time - seenActors[i].mapTimeSeen > MEMORYLIFE)
+            {
+                //console.printf("Forgetting %s", seenActors[i].seenActor.player.GetUserName());
+                seenActors.Delete(i);
+            }
+        }
+    }
+
+    bool Setup (int newID)
     {
         if(user_DoorIDs != "")
         {
@@ -32,6 +100,13 @@ Class RoomManager : Actor
             for(int i = 0; i < doorIDs.Size(); i++)
             {
                 AddDoor(doorIDs[i]);
+            }
+
+            roomID = newID;
+
+            if(CVar.GetCVar("DC_DEBUGMODE"))
+            {
+                console.printf("RoomManager %d ready for generation", roomID);
             }
 
             readyForGen = true;
@@ -45,7 +120,6 @@ Class RoomManager : Actor
     bool MakeNewConnection(RoomManager otherRoomManager)
     {
         //Get door to connect to
-        console.printf("=====Other Room=====");
         int otherDoorIndex = otherRoomManager.GetRandomUnusedDoorIndex();
         if(CVar.GetCVar("DC_DEBUGMODE"))
         {
@@ -57,7 +131,6 @@ Class RoomManager : Actor
         }
         
         //Get door to connect from
-        console.printf("=====This Room=====");
         int myDoorIndex = GetRandomUnusedDoorIndex();
         RoomDoor myDoor = doors[myDoorIndex];
         if(CVar.GetCVar("DC_DEBUGMODE"))
@@ -114,15 +187,13 @@ Class RoomManager : Actor
         LineIdIterator iterator = Level.CreateLineIdIterator(inID);
         array <int> output;
 		int currentIndex = 0;
+        int doorHelperOffset = 24;
 		while(true) {
 			currentIndex = iterator.Next();
 			if(currentIndex == -1) break;
 			output.Push(currentIndex);
 		}
-        if(CVar.GetCVar("DC_DEBUGMODE"))
-        {
-            console.printf("line #%d", output[0]);
-        }
+        
         //create RoomDoor and assign linedef reference by ID
         RoomDoor newDoor = new("RoomDoor");
         newDoor.doorLine = Level.Lines[output[0]];
@@ -131,6 +202,17 @@ Class RoomManager : Actor
         newDoor.doorLine.flags += (Line.ML_BLOCKING);
         newDoor.isInUse = false;
         newDoor.doorID = inID;
+
+        Vector3 doorCenter = Geometry.GetLineMidPoint(newDoor.doorLine);
+        
+        double lineAngle = Geometry.GetLineAngle(newDoor.doorLine);
+        
+        Vector3 offsetPoint = doorCenter + (doorHelperOffset * cos(lineAngle) * -1, doorHelperOffset * sin(lineAngle) * -1, 0);
+        
+        //console.printf("doorCenter: (%.1f,%.1f,%.1f) \nangle: %.1f \noffsetPoint: (%.1f,%.1f,%.1f)", doorCenter.x, doorCenter.y, doorCenter.z, lineAngle, offsetPoint.x, offsetPoint.y, offsetPoint.z);
+
+        newDoor.doorHelper = DoorHelper(Actor.Spawn("DoorHelper", offsetPoint));
+        
         doors.Push(newDoor);
     }
 
@@ -177,5 +259,26 @@ Class RoomManager : Actor
         {
             return -1;
         }
+    }
+}
+
+Class DoorHelper : Actor
+{
+    Default
+    {
+        +SHOOTABLE
+        +NOGRAVITY
+        Health 999999999999;
+    }
+    States
+    {
+        Spawn:
+            TNT1 A 1;
+        Idle:
+            TNT1 A 1
+            {
+                Health = 999999999999;
+            }
+            Loop;
     }
 }

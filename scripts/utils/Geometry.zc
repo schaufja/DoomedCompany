@@ -1,0 +1,43 @@
+class Geometry
+{
+    static Vector3 GetLineMidPoint(Line inLine)
+    {
+        int midX, midY, midZ;
+        midX = (inLine.v1.p.x + inLine.v2.p.x) / 2;
+        midY = (inLine.v1.p.y + inLine.v2.p.y) / 2;
+        midZ = (inLine.backsector.CenterCeiling() - inLine.backsector.CenterFloor()) / 2;
+        Vector3 outVector;
+        outVector.x = midX;
+        outVector.y = midY;
+        outVector.z = midZ;
+        return outVector;
+    }
+
+    static double GetLineAngle(Line inLine)
+    {
+        Vertex point1 = inLine.v1;
+        Vertex point2 = inLine.v2;
+        double preX = point2.p.x - point1.p.x;
+        double preY = point2.p.y - point1.p.y;
+
+        //Doors are always aligned to an axis so we can hard-code the angles.
+        if(preY > 0)
+        {
+            return 0.0;
+        }
+        else if(preX < 0)
+        {
+            return 90.0;
+        }
+        else if(preY < 0)
+        {
+            return 180.0;
+        }
+        else if(preX > 0)
+        {
+            return 270.0;
+        }
+
+        return 0.0;
+    }
+}
