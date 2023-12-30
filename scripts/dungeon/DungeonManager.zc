@@ -3,11 +3,15 @@ const ENTRANCE_ROOM_ID = 10000;
 Class DungeonManager : Actor
 {
     array <RoomManager> rooms;
+    array <RoomManager> usedRooms;
     RoomManager entrance;
+    RoomManager lastRoom;
+
+    int minRoomCount, maxRoomCount;
 
     override void Tick(void)
     {
-        if (level.time > 15 && rooms.Size() == 0)
+        if (level.time > 3 && rooms.Size() == 0)
         {
             SetEntranceManager();
             let iterator = ThinkerIterator.Create("RoomManager");
@@ -49,27 +53,57 @@ Class DungeonManager : Actor
     RoomManager GetRandomRoomManager(RoomManager askingRoomManager)
     {
         int index = askingRoomManager.roomID;
+        array <RoomManager> triedRooms;
+    
         while(index == askingRoomManager.roomID)
         {
+            int tempIndex = random(0, rooms.Size() - 1);
+            if(rooms[tempIndex].GetFirstUnusedDoorIndex() == -1)
+            {
+                triedRooms.Push(rooms[tempIndex]);
+                if(triedRooms.Size() == rooms.Size())
+                {
+                    console.printf("Tried all other rooms and could not find an empty door.");
+                    break;
+                }
+                continue;
+            }
             //While our index matches the asking RM, generate a new index
-            index = random(0, rooms.Size() - 1);
-            console.printf("random door index generated: %d, asking room index: %d", index, askingRoomManager.roomID);
+            index = tempIndex;
         }
-        console.printf("returning index %d", index);
+
         return rooms[index];
     }
 
     void GenerateDungeon(void)
     {
+        minRoomCount = 1;
+        maxRoomCount = 2;
+
         if(rooms.Size() > 0 && entrance.readyForGen)
         {
+            usedRooms.Push(entrance);
             //Generate entrance connections
             for (int i = 0; i < random(1, entrance.doors.Size()); i++)
             {
                 RoomManager randomRoomManager = GetRandomRoomManager(entrance);
                 entrance.MakeNewConnection(randomRoomManager);
+                usedRooms.Push(randomRoomManager);
             }
+            lastRoom = entrance;
+
+            for(int i = 0; i < random(1, usedRooms.Size()); i++)
+            {
+                RoomManager newRoom = usedRooms[random(0, usedRooms.Size() - 1)];
+                RoomManager randomRoomManager = GetRandomRoomManager(newRoom);
+                if (newRoom != randomRoomManager)
+                {
+                    newRoom.MakeNewConnection(randomRoomManager);
+                    usedRooms.Push(randomRoomManager);  
+                }
             
+                lastRoom = newRoom;
+            }
         }
     }
 }

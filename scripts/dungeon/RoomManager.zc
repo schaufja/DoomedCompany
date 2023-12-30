@@ -181,6 +181,10 @@ Class RoomManager : Actor
         
         //Get door to connect from
         int myDoorIndex = GetRandomUnusedDoorIndex();
+        if (myDoorIndex == -1)
+        {
+            return false;
+        }
         RoomDoor myDoor = doors[myDoorIndex];
         if(CVar.GetCVar("DC_DEBUGMODE"))
         {
@@ -302,7 +306,6 @@ Class RoomManager : Actor
     int GetRandomUnusedDoorIndex(void)
     {
         array <int> doorIndexes;
-        console.printf("I am RM %d and I have %d doors", roomID, doors.Size());
         for (int i = 0; i < doors.Size(); i++)
         {
             //console.printf("doors[%d].isInUse: %d", i, doors[i].isInUse);
@@ -323,7 +326,6 @@ Class RoomManager : Actor
         }
         else
         {
-            console.printf("doorIndex.Size() < 1");
             return -1;
         }
     }
