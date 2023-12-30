@@ -1,17 +1,79 @@
 class DC_BaseMonster : Demon
 {
     Actor tempTarget;
+    RoomManager currentRoom;
 
     override void Tick(void)
     {
+        Super.Tick();
 
+        UpdateOccupiedRoom();
+        
+        if(goal)
+        {
+            console.printf("I have a goal at (%.1f,%.1f,%.1f)", goal.pos.x, goal.pos.y, goal.pos.z);
+        }
     }
+
     Default
     {
 
     }
+
     States
     {
-
+    Spawn:
+        SARG AABBCCDD 2 Fast
+        {
+            A_Wander();
+            A_Look();
+        }
+        Loop;
+    See:
+        SARG AABBCCDD 2 Fast A_Chase;
+        Loop;
+    Melee:
+        SARG EF 8 Fast A_FaceTarget;
+        SARG G 8 Fast A_SargAttack;
+        Goto See;
+    Pain:
+        SARG H 2 Fast;
+        SARG H 2 Fast A_Pain;
+        Goto See;
+    Death:
+        SARG I 8;
+        SARG J 8 A_Scream;
+        SARG K 4;
+        SARG L 4 A_NoBlocking;
+        SARG M 4;
+        SARG N -1;
+        Stop;
     }
+
+    void UpdateOccupiedRoom(void)
+	{
+		let iterator = ThinkerIterator.Create("RoomManager");
+		RoomManager rm;
+
+		while (rm = RoomManager(iterator.Next()))
+		{
+			if(Distance2D(rm) <= rm.user_RoomRadius)
+			{
+				currentRoom = rm;
+                currentRoom.UpdateMemory(self);
+				//console.printf("%s found nearest RoomManager #%d", self.GetClassName(), currentRoom.roomID);
+			}
+		}
+
+		if(currentRoom && target)
+		{
+            CompanyMan player = CompanyMan(target);
+            if(player && currentRoom != player.currentRoom)
+            {
+			    //console.printf("Target is not in my room");
+
+                //goal = currentRoom.
+            }
+		}
+	}
 }

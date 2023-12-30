@@ -7,7 +7,7 @@ Class DungeonManager : Actor
 
     override void Tick(void)
     {
-        if (level.time > 3 && rooms.Size() == 0)
+        if (level.time > 15 && rooms.Size() == 0)
         {
             SetEntranceManager();
             let iterator = ThinkerIterator.Create("RoomManager");
@@ -15,21 +15,16 @@ Class DungeonManager : Actor
             //Get RoomManagers
             while(rm = RoomManager(iterator.Next())) 
             {
-                if(rm != entrance)
-                {
-                    rooms.Push(rm);
-                }
+                rooms.Push(rm);
             }
             if(CVar.GetCVar("DC_DEBUGMODE"))
             {
                 console.printf("Fount %d RoomManagers", rooms.Size());
             }
-            
-            entrance.Setup(0);
 
             for(int i = 0; i < rooms.Size(); i++)
             {
-                rooms[i].Setup(i+1);
+                rooms[i].Setup(i);
             }
 
             if(CVar.GetCVar("DC_DEBUGMODE") && entrance && entrance.readyForGen)
@@ -51,9 +46,17 @@ Class DungeonManager : Actor
         }
     }
 
-    RoomManager GetRandomRoomManager()
+    RoomManager GetRandomRoomManager(RoomManager askingRoomManager)
     {
-        return rooms[random(0, rooms.Size() - 1)];
+        int index = askingRoomManager.roomID;
+        while(index == askingRoomManager.roomID)
+        {
+            //While our index matches the asking RM, generate a new index
+            index = random(0, rooms.Size() - 1);
+            console.printf("random door index generated: %d, asking room index: %d", index, askingRoomManager.roomID);
+        }
+        console.printf("returning index %d", index);
+        return rooms[index];
     }
 
     void GenerateDungeon(void)
@@ -63,7 +66,7 @@ Class DungeonManager : Actor
             //Generate entrance connections
             for (int i = 0; i < random(1, entrance.doors.Size()); i++)
             {
-                RoomManager randomRoomManager = GetRandomRoomManager();
+                RoomManager randomRoomManager = GetRandomRoomManager(entrance);
                 entrance.MakeNewConnection(randomRoomManager);
             }
             

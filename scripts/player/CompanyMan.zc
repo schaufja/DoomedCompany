@@ -1,5 +1,3 @@
-#include "scripts/items/DC_BaseItem.zc"
-
 Class CompanyMan : DoomPlayer
 {
 	int staminaRegenCounter;
@@ -35,6 +33,10 @@ Class CompanyMan : DoomPlayer
 	int lightScale;
 	int deathBeamChargeLevel;
 	const DEATHBEAM_MAX_CHARGE = 140.0;
+
+	//dungeon helpers
+	const ROOM_SEARCH_DIST = 960.0;
+	RoomManager currentRoom;
 
 	Default
 	{
@@ -93,6 +95,8 @@ Class CompanyMan : DoomPlayer
 		DoHeavy();
 
 		DoToolTip();
+
+		UpdateOccupiedRoom();
 
 		itemCycleDelay--;
 	}
@@ -546,6 +550,22 @@ Class CompanyMan : DoomPlayer
 		if(soundName != "")
 		{
 			A_StartSound(soundName, CHAN_AUTO, volume: 0.8);
+		}
+	}
+
+	void UpdateOccupiedRoom(void)
+	{
+		let iterator = ThinkerIterator.Create("RoomManager");
+		RoomManager rm;
+
+		while (rm = RoomManager(iterator.Next()))
+		{
+			if(Distance2D(rm) <= rm.user_RoomRadius)
+			{
+				currentRoom = rm;
+				currentRoom.UpdateMemory(self);
+				//console.printf("found nearest RoomManager #%d", currentRoom.roomID);
+			}
 		}
 	}
 

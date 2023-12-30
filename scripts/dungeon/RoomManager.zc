@@ -1,16 +1,17 @@
-const MEMORYLIFE = 35;
+const MEMORYLIFE = 105;
 
 Class RoomDoor
 {
     Line doorLine;
     DoorHelper doorHelper;
+    RoomManager otherRoom;
     bool isInUse;
     int doorID;
 }
 
-Class SightMemory
+Class RoomMemory
 {
-    Actor seenActor;
+    Actor memoryActor;
     int mapTimeSeen;
 }
 
@@ -18,11 +19,11 @@ Class RoomManager : Actor
 {
     int roomID;
     string user_DoorIDs; //Editor defined
+    float user_RoomRadius; //Editor defined
     array <int> doorIDs;
-    array <RoomManager> siblingRooms;
     array <RoomDoor> doors;
     bool readyForGen;
-    array <SightMemory> seenActors;
+    array <RoomMemory> memories;
 
     Default
     {
@@ -36,42 +37,27 @@ Class RoomManager : Actor
 
     override void Tick(void)
     {
-        A_LookEx(32, 0, fov: 360);
-        if(target is "Actor")
-        {
-            SightMemory newSight = new("SightMemory");
-            newSight.seenActor = target;
-            newSight.mapTimeSeen = level.time;
+        Super.Tick();
 
-            int memoryIndex = GetMemoryIndex(target);
-            
-            if(memoryIndex != -1)
-            {
-                seenActors[memoryIndex].mapTimeSeen = level.time;
-            }
-            else
-            {
-                seenActors.Push(newSight);
-            }
-            target = null;
-        }
+        
+        //UpdateMemories();
 
         ClearOldMemories();
 
         if(CVar.GetCVar("DC_DEBUGMODE"))
         {
-            if(seenActors.Size() > 0 && level.time % 70 == 0)
+            if(memories.Size() > 0 && level.time % 70 == 0)
             {
-                console.printf("I am RoomManager %d and I remember seeing %d entities", roomID, seenActors.Size());
+                console.printf("I am RoomManager %d and I remember seeing %d entities", roomID, memories.Size());
             }
         }
     }
 
     int GetMemoryIndex(Actor actor)
     {
-        for(int i = 0; i < seenActors.Size(); i++)
+        for(int i = 0; i < memories.Size(); i++)
         {
-            if(seenActors[i].seenActor is "Actor")
+            if(memories[i].memoryActor == actor)
             {
                 return i;
             }
@@ -79,14 +65,76 @@ Class RoomManager : Actor
         return -1;
     }
 
+    void UpdateMemory(Actor memActor)
+    {
+        int memoryIndex = GetMemoryIndex(memActor);
+
+        //Handle updating memory if we have one
+        if(memoryIndex != -1)
+        {
+            memories[memoryIndex].mapTimeSeen = level.time;
+        }
+        //Add a new memory
+        else
+        {
+            RoomMemory newSight = new("RoomMemory");
+            newSight.memoryActor = memActor;
+            newSight.mapTimeSeen = level.time;
+            memories.Push(newSight);
+        }
+    }
+
+    void UpdateMemories(void)
+    {
+        //Debug variables
+        int updateCount, newCount;
+
+        Actor a;
+        let iterator = ThinkerIterator.Create("Actor");
+
+        while (a = Actor(iterator.Next()))
+        {
+            if((a is "CompanyMan") || (a is "DC_BaseMonster"))
+            {
+                console.printf("distance from RoomManager %d to %s is %.1f", roomID, a.GetClassName(), Distance2D(a));
+                if(Distance2D(a) < user_RoomRadius)
+                {
+                    int memoryIndex = GetMemoryIndex(a);
+
+                    //Handle updating memory if we have one
+                    if(memoryIndex != -1)
+                    {
+                        memories[memoryIndex].mapTimeSeen = level.time;
+                        updateCount++;
+                    }
+                    //Add a new memory
+                    else
+                    {
+                        RoomMemory newSight = new("RoomMemory");
+                        newSight.memoryActor = a;
+                        newSight.mapTimeSeen = level.time;
+                        memories.Push(newSight);
+                        newCount++;
+                    }
+                }
+            }
+        }
+
+        if(CVar.GetCVar("DC_DEBUGMODE"))
+        {
+            //console.printf("Updated %d memories \nAdded %d new memories", updateCount, newCount);
+        }
+
+    }
+
     void ClearOldMemories(void)
     {
-        for(int i = 0; i < seenActors.Size(); i++)
+        for(int i = 0; i < memories.Size(); i++)
         {
-            if(level.time - seenActors[i].mapTimeSeen > MEMORYLIFE)
+            if(level.time - memories[i].mapTimeSeen > MEMORYLIFE)
             {
-                //console.printf("Forgetting %s", seenActors[i].seenActor.player.GetUserName());
-                seenActors.Delete(i);
+                //console.printf("Forgetting %s", memories[i].memoryActor.player.GetUserName());
+                memories.Delete(i);
             }
         }
     }
@@ -106,7 +154,7 @@ Class RoomManager : Actor
 
             if(CVar.GetCVar("DC_DEBUGMODE"))
             {
-                console.printf("RoomManager %d ready for generation", roomID);
+                console.printf("RoomManager %d ready for generation with %d doors", roomID, doors.Size());
             }
 
             readyForGen = true;
@@ -120,6 +168,7 @@ Class RoomManager : Actor
     bool MakeNewConnection(RoomManager otherRoomManager)
     {
         //Get door to connect to
+        console.printf("otherRoomManager (%.1f,%.1f,%.1f)", otherRoomManager.pos.x, otherRoomManager.pos.y, otherRoomManager.pos.z);
         int otherDoorIndex = otherRoomManager.GetRandomUnusedDoorIndex();
         if(CVar.GetCVar("DC_DEBUGMODE"))
         {
@@ -137,27 +186,12 @@ Class RoomManager : Actor
         {
             console.printf("Selected my door index %d", myDoorIndex);
         }
-
-        //Add to siblings
-        if(siblingRooms.Find(otherRoomManager) != siblingRooms.Size())
-        {
-            siblingRooms.Push(otherRoomManager);
-        }
-        if(CVar.GetCVar("DC_DEBUGMODE"))
-        {
-            console.printf("Self siblings count: %d", siblingRooms.Size());
-        }
         
-        //Add self to other siblings
-        if(otherRoomManager.siblingRooms.Find(self) != siblingRooms.Size())
-        {
-            otherRoomManager.siblingRooms.Push(self);
-        }
-        if(CVar.GetCVar("DC_DEBUGMODE"))
-        {
-            console.printf("Other siblings count: %d", otherRoomManager.siblingRooms.Size());
-        }
         RoomDoor otherDoor = otherRoomManager.doors[otherDoorIndex];
+
+        //For monster helper
+        myDoor.otherRoom = otherRoomManager;
+        otherDoor.otherRoom = self;
         
         //Create the LinePortal
         console.printf("ids: %d, %d", myDoor.doorID, otherDoor.doorID);
@@ -175,8 +209,10 @@ Class RoomManager : Actor
     {
         array <string> splitIDs;
         inDoorIDs.Split(splitIDs, ",");
+        //console.printf("splitIDs.Size()", splitIDs);
         for (int i = 0; i < splitIDs.Size(); i++)
         {
+            //console.printf("%d", splitIDs[i]);
             doorIDs.Push(splitIDs[i].ToInt());
         }
     }
@@ -222,6 +258,35 @@ Class RoomManager : Actor
         inDoor.doorLine.flags -= (Line.ML_BLOCKING);
     }
 
+    //Searches doors for one with a matching room manager
+    int GetDoorIndexByNeighbor(RoomManager otherRoomManager)
+    {
+        for(int i = 0; i < doors.Size(); i++)
+        {
+            if(doors[i].otherRoom == otherRoomManager)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    //Searches doors for one with a matching memory of a target
+    int GetDoorIndexByNearbyActor(Actor inActor)
+    {
+        for(int i = 0; i < doors.Size(); i++)
+        {
+            if(doors[i].isInUse)
+            {
+                if(doors[i].otherRoom.GetMemoryIndex(inActor) != -1)
+                {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
     int GetFirstUnusedDoorIndex(void)
     {
         for (int i = 0; i < doors.Size(); i++)
@@ -237,9 +302,10 @@ Class RoomManager : Actor
     int GetRandomUnusedDoorIndex(void)
     {
         array <int> doorIndexes;
+        console.printf("I am RM %d and I have %d doors", roomID, doors.Size());
         for (int i = 0; i < doors.Size(); i++)
         {
-            console.printf("doors[%d].isInUse: %d", i, doors[i].isInUse);
+            //console.printf("doors[%d].isInUse: %d", i, doors[i].isInUse);
             if(!doors[i].isInUse)
             {
                 doorIndexes.Push(i);
@@ -257,6 +323,7 @@ Class RoomManager : Actor
         }
         else
         {
+            console.printf("doorIndex.Size() < 1");
             return -1;
         }
     }

@@ -18,8 +18,10 @@ version "4.5.0"
 #include "scripts/dungeon/RoomManager.zc"
 #include "scripts/dungeon/DungeonManager.zc"
 
+//Monsters
+#include "scripts/monsters/DC_BaseMonster.zc"
 
-//Items
+//Items - Base
 #include "scripts/items/DC_BaseItem.zc"
 #include "scripts/items/Flashlight_Basic.zc"
 #include "scripts/items/Flashlight_Pro.zc"
